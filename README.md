@@ -6,6 +6,6 @@ Contains a Python script to construct a plot of
 To run the Python script install requirements, then in the 
 project direcory execute
 
-`python ./src/main.py <<datafile>>`
+`python ./main.py <<datafile>>`
 
 where `<<datafile>>` is an Excel file name, e.g., `data.xlsx`.
