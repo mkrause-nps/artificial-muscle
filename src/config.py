@@ -1,7 +1,24 @@
-'''
+#!/usr/bin/env python3
+
+"""
 Configuration file
-    output_dir: directory the data file resides in
-'''
+
+Parameters
+----------
+output_dir: string
+             Directory the Excel files reside and the figure files should be
+             written to on the system.
+plot_xlabel: str
+plot_ylabel: str
+             The axis labels of the plot.
+xlims: dict
+       The minimum and maximum value of the x-axis of the plot.
+legend: list
+        Strings to describe the data plotted.
+legend_loc: str
+            A Matplotlib formatting string that determines the position of the
+            legend on the plot.
+"""
 
 
 class Config:
