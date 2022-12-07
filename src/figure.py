@@ -18,14 +18,18 @@ class Figure:
         return fig, ax
 
     @classmethod
-    def plot(cls, excel_filename, ax, sheet_name='Sheet1', symbol='-ob', legend=False):
+    def plot(cls, excel_filename, ax, sheet_name='Sheet1', symbol='-ob', plot_type='linear', legend=False, diagonal=False):
         df = pd.read_excel(excel_filename, sheet_name=sheet_name, index_col=1)
         pd.DataFrame.info(df)
         plt.gca()
+        if diagonal:
+            xvals = range(0, 1200)
+            yvals = range(0, 1200)
+            plt.plot(xvals, yvals, '--k', label='_nolegend_')
         xvals = df.index
         yvals = df['y']
         yerr = df['err']
-        plt.yscale('log')
+        plt.yscale(plot_type)
         plt.errorbar(
             xvals, yvals,
             yerr=yerr,
@@ -35,6 +39,8 @@ class Figure:
         plt.xlabel(Config.plot_xlabel)
         plt.ylabel(Config.plot_ylabel)
         ax.set_xlim(Config.xlims['min'], Config.xlims['max'])
+        if plot_type == 'linear':
+            ax.set_ylim(Config.xlims['min'], Config.xlims['max'])
         ax.set_box_aspect(1)
         if legend:
             ax.legend(Config.legend, loc=Config.legend_loc)
