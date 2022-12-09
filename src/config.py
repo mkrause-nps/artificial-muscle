@@ -23,6 +23,8 @@ legend_loc: str
 
 class Config:
     output_dir = 'C:\\Users\\mkrause.RIZIA-PC\\OneDrive - Naval Postgraduate School\\artificial_muscle\\data'
+    suffix = None,
+    plot_title = None,
     plot_xlabel = 'fraction CNF added (weight %)'
     plot_ylabel = 'conductivity (S/m)'
     xlims = {'min': 0, 'max': 12}

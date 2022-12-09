@@ -18,14 +18,13 @@ class Figure:
         return fig, ax
 
     @classmethod
-    def plot(cls, excel_filename, ax, sheet_name='Sheet1', symbol='-ob', plot_type='linear', legend=False, diagonal=False):
+    def plot(cls, excel_filename, ax,
+             sheet_name='Sheet1', symbol='-ob', plot_type='linear', title=None, legend=False, diagonal=False):
         df = pd.read_excel(excel_filename, sheet_name=sheet_name, index_col=1)
         pd.DataFrame.info(df)
         plt.gca()
         if diagonal:
-            xvals = range(0, 1200)
-            yvals = range(0, 1200)
-            plt.plot(xvals, yvals, '--k', label='_nolegend_')
+            cls.__plot_diagonal()
         xvals = df.index
         yvals = df['y']
         yerr = df['err']
@@ -38,6 +37,7 @@ class Figure:
         )
         plt.xlabel(Config.plot_xlabel)
         plt.ylabel(Config.plot_ylabel)
+        plt.title(title)
         ax.set_xlim(Config.xlims['min'], Config.xlims['max'])
         if plot_type == 'linear':
             ax.set_ylim(Config.xlims['min'], Config.xlims['max'])
@@ -46,11 +46,17 @@ class Figure:
             ax.legend(Config.legend, loc=Config.legend_loc)
 
     @classmethod
-    def save(cls, excel_filename, dest):
-        figure_filename = excel_filename.split('.')[0] + '.png'
+    def save(cls, excel_filename, dest, suffix:str):
+        figure_filename = excel_filename.split('.')[0] + '_' + suffix + '.png'
         dest = os.path.join(dest, figure_filename)
         plt.savefig(dest)
         if os.path.exists(f'{dest}'):
             logging.info(f'Wrote file {figure_filename} to {dest}')
         else:
             logging.warning('Could not write file')
+
+    @staticmethod
+    def __plot_diagonal():
+        xvals = range(0, Config.xlims['max'])
+        yvals = range(0, Config.xlims['max'])
+        plt.plot(xvals, yvals, '--k', label='_nolegend_')
