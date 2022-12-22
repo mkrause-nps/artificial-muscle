@@ -2,6 +2,8 @@
 
 import os
 import logging
+import sys
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from src.config import Config
@@ -10,12 +12,19 @@ from src.config import Config
 class Figure:
 
     @classmethod
-    def figure_handle(cls) -> tuple:
+    def get_figure_handle(cls) -> tuple:
         fig, ax = plt.subplots()
         ax.set_xlim(Config.xlims['min'], Config.xlims['max'])
         ax.set_box_aspect(1)
         ax.legend(Config.legend)
         return fig, ax
+
+    @classmethod
+    def get_dataframe(cls, excel_filename):
+        if Config.py_all == '' or Config.py_all.isspace():
+            raise ValueError()
+
+        return pd.read_excel(excel_filename, sheet_name=Config.py_all)
 
     @classmethod
     def plot(cls, excel_filename, ax,
@@ -46,7 +55,7 @@ class Figure:
             ax.legend(Config.legend, loc=Config.legend_loc)
 
     @classmethod
-    def save(cls, excel_filename, dest, suffix:str):
+    def save(cls, excel_filename, dest, suffix: str):
         figure_filename = excel_filename.split('.')[0] + '_' + suffix + '.png'
         dest = os.path.join(dest, figure_filename)
         plt.savefig(dest)

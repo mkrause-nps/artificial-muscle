@@ -3,9 +3,11 @@
 import os
 import logging
 import argparse
+import sys
 from enum import Enum
 from src.config import Config
 from src.figure import Figure
+from src.experiment_specs import ExperimentSpecs
 
 logging.basicConfig(level=logging.INFO)
 
@@ -13,6 +15,7 @@ logging.basicConfig(level=logging.INFO)
 class Type(Enum):
     """User specifies the type of data to be plotted on command line."""
     conductivity = 'conductivity'
+    width = 'width'
     hp_prior = 'hp_prior'
     vp_prior = 'vp_prior'
     hp_past = 'hp_past'
@@ -23,6 +26,7 @@ class Type(Enum):
 
 
 class Util:
+
     @classmethod
     def plot_channel_widths(cls, sm_sheet, br_sheet):
         Config.legend = ['sacrificial material', 'black resin (reference)']
@@ -32,6 +36,25 @@ class Util:
         Figure.plot(excel_filename=filename, ax=ax, sheet_name=sm_sheet, symbol='-ob')
         Figure.plot(excel_filename=filename, ax=ax, sheet_name=br_sheet,
                     title=Config.plot_title, symbol='-or', legend=True, diagonal=True)
+
+    @classmethod
+    def plot_channel_widths(cls, excel_filename: str):
+        specs1 = {
+            'status': 'prior',
+            'material': 'sacrificial_material',
+            'print_direction': 'perpendicular'
+        }
+
+        specs2 = {
+            'status': 'past',
+            'material': 'sacrificial_material',
+            'print_direction': 'perpendicular'
+        }
+
+        df = Figure.get_dataframe(excel_filename=excel_filename)
+        experiment_specs = ExperimentSpecs(dataframe=df, prior=specs1, past=specs2)
+        experiment_specs.get_differences()
+        experiment_specs.plot_differences()
 
 def config_channel_study():
     Config.legend = ['sacrificial material', 'black resin (reference)']
@@ -43,22 +66,28 @@ def config_channel_study():
 parser = argparse.ArgumentParser(description="Artificial Muscle Project")
 parser.add_argument('filename', type=str, help='Path to the Excel file')
 parser.add_argument('type', type=Type, choices=list(Type), help='Type of data to plot')
-#parser.add_argument('suffix', type=str, help='Specifies output filename')
+# parser.add_argument('suffix', type=str, help='Specifies output filename')
 args = parser.parse_args()
 
-filename = os.path.join(Config.output_dir, args.filename)
+filename: str = os.path.join(Config.output_dir, args.filename)
 
 logging.info(f'file name: {filename}')
 logging.info(f'data type to process: {args.type}')
 
-_, ax = Figure.figure_handle()
+_, ax = Figure.get_figure_handle()
 if args.type == Type.conductivity:
     Config.plot_title = 'Conductivity of carbon mesoporous in TangoPlus'
     Config.plot_xlabel = 'fraction CMP added (weight %)'
     # Config.legend = ['sacrificial material', 'black resin (reference)']
     Figure.plot(excel_filename=filename, ax=ax,
-                sheet_name='Sheet1', title=Config.plot_title, symbol='-ob', plot_type='log')
+                sheet_name='Sheet1', title=Config.plot_title, symbol='-ob', plot_type='log', legend=False)
     # Figure.plot(excel_filename=filename, ax=ax, sheet_name='Sheet2', symbol='-or', plot_type='log', legend=True)
+elif args.type == Type.width:
+    #try:
+    Util.plot_channel_widths(excel_filename=filename)
+    # except ValueError:
+    #     logging.error('Config.py_all is either empty or has whitespace - set to existing sheet name')
+    #     sys.exit()
 elif args.type == Type.hp_prior:
     Config.plot_title = 'Channels perpendicular to print direction - before baking'
     config_channel_study()
