@@ -77,10 +77,11 @@ logging.info(f'data type to process: {args.type}')
 _, ax = Figure.get_figure_handle()
 if args.type == Type.conductivity:
     Config.plot_title = 'Conductivity of carbon mesoporous in TangoPlus'
-    Config.plot_xlabel = 'fraction CMP added (weight %)'
+    # Config.plot_title = 'Conductivity of carbon nanofibers in TangoPlus'
+    Config.plot_xlabel = 'fraction CMPs added (weight %)'
     # Config.legend = ['sacrificial material', 'black resin (reference)']
     Figure.plot(excel_filename=filename, ax=ax,
-                sheet_name='Sheet1', title=Config.plot_title, symbol='-ob', plot_type='log', legend=False)
+                sheet_name='Sheet1', title=Config.plot_title, symbol='-ob', plot_type='log')
     # Figure.plot(excel_filename=filename, ax=ax, sheet_name='Sheet2', symbol='-or', plot_type='log', legend=True)
 elif args.type == Type.width:
     df = Figure.get_dataframe(excel_filename=filename)

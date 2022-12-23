@@ -56,6 +56,8 @@ class Figure:
         ax.set_box_aspect(1)
         if legend:
             ax.legend(Config.legend, loc=Config.legend_loc)
+        else:
+            ax.legend('', frameon=False)  # otherwise that leaves an ugly small gray frame in the upper right corner
 
     @classmethod
     def plot_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str, past: str, prior: str):
