@@ -1,65 +1,10 @@
 #!/usr/bin/env python3
-import numpy as np
+import numpy
 import pandas as pd
-import matplotlib.pyplot as plt
 from src.config import Config
 
 
-class ExperimentSpecs:
-
-    # df_current1: pd.DataFrame = None
-    # df_current2: pd.DataFrame = None
-    #
-    # current1_stats: float = None
-    # current2_stats: float = None
-
-    # perp_before_sm = {
-    #     'status': 'prior',
-    #     'print_direction': 'perpendicular',
-    #     'material': 'sacrificial_material'
-    # }
-    #
-    # perp_before_br = {
-    #     'status': 'prior',
-    #     'print_direction': 'perpendicular',
-    #     'material': 'black_resin'
-    # }
-    #
-    # perp_after_sm = {
-    #     'status': 'past',
-    #     'print_direction': 'perpendicular',
-    #     'material': 'sacrificial_material'
-    # }
-    #
-    # perp_after_br = {
-    #     'status': 'past',
-    #     'print_direction': 'perpendicular',
-    #     'material': 'black_resin'
-    # }
-    #
-    # para_before_sm = {
-    #     'status': 'prior',
-    #     'print_direction': 'parallel',
-    #     'material': 'sacrificial_material'
-    # }
-    #
-    # para_before_br = {
-    #     'status': 'prior',
-    #     'print_direction': 'parallel',
-    #     'material': 'black_resin'
-    # }
-    #
-    # para_after_sm = {
-    #     'status': 'past',
-    #     'print_direction': 'parallel',
-    #     'material': 'sacrificial_material'
-    # }
-    #
-    # para_after_br = {
-    #     'status': 'past',
-    #     'print_direction': 'parallel',
-    #     'material': 'black_resin'
-    # }
+class ChannelWidth:
 
     def __init__(self, dataframe: pd.DataFrame, prior: dict, past: dict):
         self.df: pd.DataFrame = dataframe
@@ -76,17 +21,7 @@ class ExperimentSpecs:
             },
             columns=['channel_id', 'width_diff']
         )
-
-    def plot_differences(self):
-        title = f'Channel widths {self.prior["material"]}: {self.past["status"]} - {self.prior["status"]}'
-        xlabel = 'channel ID'
-        ylabel = r'width difference ($\mu$m)'
-
-        # Create plot.
-        plt.plot(self.differences['channel_id'], self.differences['width_diff'])
-        plt.title(title)
-
-        plt.show()
+        self.differences.reset_index(drop=True, inplace=True)  # not sure why the index was messed but this fixes it
 
     def __filter_df(self, mask: dict) -> pd.DataFrame:
         """Filter dataframe for two quantities of interest and return as new df"""
@@ -112,6 +47,6 @@ class ExperimentSpecs:
         grouped = df[col_to_get_mean].groupby(df[key_to_group_by])
         return grouped.mean()
 
-    def __get_id_column(self) -> pd.Series:
+    def __get_id_column(self) -> numpy.ndarray:
         """Add the channel ID as a column, assign unique names to columns and combine data from two DFs into one."""
         return self.df['channel_id'].unique()  # get a set of IDs

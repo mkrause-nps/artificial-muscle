@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import logging
 import argparse
-import sys
 from enum import Enum
+
+import pandas as pd
+
 from src.config import Config
 from src.figure import Figure
-from src.experiment_specs import ExperimentSpecs
+from src.channel_width import ChannelWidth
+from src.widths import Widths
 
 logging.basicConfig(level=logging.INFO)
 
@@ -38,23 +42,19 @@ class Util:
                     title=Config.plot_title, symbol='-or', legend=True, diagonal=True)
 
     @classmethod
-    def plot_channel_widths(cls, excel_filename: str):
-        specs1 = {
-            'status': 'prior',
-            'material': 'sacrificial_material',
-            'print_direction': 'perpendicular'
-        }
-
-        specs2 = {
-            'status': 'past',
-            'material': 'sacrificial_material',
-            'print_direction': 'perpendicular'
-        }
-
-        df = Figure.get_dataframe(excel_filename=excel_filename)
-        experiment_specs = ExperimentSpecs(dataframe=df, prior=specs1, past=specs2)
+    def run_widths_difference(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
+        experiment_specs = ChannelWidth(dataframe=data_frame, prior=specs['before'], past=specs['after'])
         experiment_specs.get_differences()
-        experiment_specs.plot_differences()
+        Figure.plot_differences(
+            x=experiment_specs.differences['channel_id'].astype("string"),  # casting to string makes x-axis categorical
+            y=experiment_specs.differences['width_diff'],
+            material=experiment_specs.prior['material'],
+            direction=experiment_specs.prior['print_direction'],
+            prior=experiment_specs.prior['status'],
+            past=experiment_specs.past['status']
+        )
+        Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=specs['suffix'])
+
 
 def config_channel_study():
     Config.legend = ['sacrificial material', 'black resin (reference)']
@@ -83,11 +83,17 @@ if args.type == Type.conductivity:
                 sheet_name='Sheet1', title=Config.plot_title, symbol='-ob', plot_type='log', legend=False)
     # Figure.plot(excel_filename=filename, ax=ax, sheet_name='Sheet2', symbol='-or', plot_type='log', legend=True)
 elif args.type == Type.width:
-    #try:
-    Util.plot_channel_widths(excel_filename=filename)
-    # except ValueError:
-    #     logging.error('Config.py_all is either empty or has whitespace - set to existing sheet name')
-    #     sys.exit()
+    df = Figure.get_dataframe(excel_filename=filename)
+    for key in Widths.specs:
+        try:
+            Util.run_widths_difference(
+                excel_filename=filename,
+                data_frame=df,
+                specs=Widths.specs[key]
+            )
+        except ValueError:
+            logging.error('Config.py_all is either empty or has whitespace - set to existing sheet name')
+            sys.exit()
 elif args.type == Type.hp_prior:
     Config.plot_title = 'Channels perpendicular to print direction - before baking'
     config_channel_study()

@@ -4,6 +4,7 @@ import os
 import logging
 import sys
 
+import numpy
 import pandas as pd
 import matplotlib.pyplot as plt
 from src.config import Config
@@ -20,7 +21,7 @@ class Figure:
         return fig, ax
 
     @classmethod
-    def get_dataframe(cls, excel_filename):
+    def get_dataframe(cls, excel_filename) -> pd.DataFrame:
         if Config.py_all == '' or Config.py_all.isspace():
             raise ValueError()
 
@@ -28,7 +29,7 @@ class Figure:
 
     @classmethod
     def plot(cls, excel_filename, ax,
-             sheet_name='Sheet1', symbol='-ob', plot_type='linear', title=None, legend=False, diagonal=False):
+             sheet_name='Sheet1', symbol='-ob', plot_type='linear', title=None, legend=False, diagonal=False) -> None:
         df = pd.read_excel(excel_filename, sheet_name=sheet_name, index_col=1)
         pd.DataFrame.info(df)
         plt.gca()
@@ -48,6 +49,8 @@ class Figure:
         plt.ylabel(Config.plot_ylabel)
         plt.title(title)
         ax.set_xlim(Config.xlims['min'], Config.xlims['max'])
+        if Config.ylims:
+            ax.set_ylim(Config.ylims['min'], Config.ylims['max'])
         if plot_type == 'linear':
             ax.set_ylim(Config.xlims['min'], Config.xlims['max'])
         ax.set_box_aspect(1)
@@ -55,8 +58,20 @@ class Figure:
             ax.legend(Config.legend, loc=Config.legend_loc)
 
     @classmethod
-    def save(cls, excel_filename, dest, suffix: str):
-        figure_filename = excel_filename.split('.')[0] + '_' + suffix + '.png'
+    def plot_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str, past: str, prior: str):
+        title = f'Channel widths of {material}, printed {direction}'
+        xlabel = 'channel ID'
+        ylabel = rf'{past} width - {prior} width ($\mu$m)'
+
+        # Create plot.
+        fig, ax = plt.subplots()
+        ax.stem(x, y)
+        ax.set_title(title)
+        ax.set(xlabel=xlabel, ylabel=ylabel)
+
+    @classmethod
+    def save(cls, excel_filename: str, dest: str, suffix: str) -> None:
+        figure_filename = cls.__get_filename(excel_filename) + '_' + suffix + '.png'
         dest = os.path.join(dest, figure_filename)
         plt.savefig(dest)
         if os.path.exists(f'{dest}'):
@@ -65,7 +80,17 @@ class Figure:
             logging.warning('Could not write file')
 
     @staticmethod
-    def __plot_diagonal():
+    def __plot_diagonal() -> None:
+        """Add a diagonal line to the plot (useful if x- and y-axis have same units and scale)."""
         xvals = range(0, Config.xlims['max'])
         yvals = range(0, Config.xlims['max'])
         plt.plot(xvals, yvals, '--k', label='_nolegend_')
+
+    @staticmethod
+    def __get_filename(filename: str):
+        """Getting the filename depending on whether it is absolute or relative."""
+        num_dots = filename.count('.')
+        if num_dots == 1:
+            return filename.split('.')[0]
+        else:
+            return  filename.split('.')[-2].split('\\')[-1]

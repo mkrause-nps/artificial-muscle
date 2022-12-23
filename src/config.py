@@ -28,7 +28,8 @@ class Config:
     plot_xlabel: str = 'fraction CNF added (weight %)'
     plot_ylabel: str = 'conductivity (S/m)'
     xlims: dict = {'min': 0, 'max': 14}
-    legend: list = ['unfiltered', 'filtered']
+    ylims: dict = None  # {'min': 10e-8, 'max': 10e2}
+    legend: list = []  # ['unfiltered', 'filtered']
     legend_loc: str = 'lower right'
     measured_widths_col_name: str = 'widths_um'
     py_all: str = 'py_all'
