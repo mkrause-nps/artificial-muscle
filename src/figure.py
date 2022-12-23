@@ -56,6 +56,8 @@ class Figure:
         ax.set_box_aspect(1)
         if legend:
             ax.legend(Config.legend, loc=Config.legend_loc)
+        else:
+            ax.legend('', frameon=False)
 
     @classmethod
     def plot_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str, past: str, prior: str):
