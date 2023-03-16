@@ -1,9 +1,11 @@
 # Artificial Muscle Data Presentation
 
-Contains a Python 3 script to construct a 
-plot of conductivity data.
+For any Python script to run install requirements (e.g., by using a virtual environment).
 
-## Usage
+## Conductivity Study
+A Python 3 script to construct a plot of conductivity data.
+
+### Usage
 To run the Python script install requirements (e.g., by 
 using a virtual environment). Then in the project 
 direcory execute
@@ -31,3 +33,23 @@ Meta data for a given spreadsheet are specified in
 The output is a semi-logarthmic plot of conductivity
 values, which is saved in PNG format to 
 the same directory the spreadsheet was loaded from.
+
+## Clearance Study
+
+Two scripts can be run within the Clearance Study:
+1. **Clearance Length**: A script to analyze and plot the fraction of channel lengths that could be cleared for a given channel size. It writes the plot to disk in PNG format.
+2. **Clearance Width**: A script to analyze and write summary plots and CSV files to disk about the widths of the cleared channel. 
+
+### Clearance Length
+
+Specify data directory and filenames at the beginning of the script. Those are used for in- and output of data. Then navigate to `src` and run `python -m clearance_plot`. It generates a PNG file with the data in variable `datafile` in the directory `data_dir` and with filename `figname`.
+
+### Clearance Width
+
+Data for that script are expected in JSON format. To get the data into JSON I copied each of the four the raw data with headers (i.e., for each channel size) into an empty text file, and used a [CSV-to-JSON](https://csvjson.com/csv2json) converter to construct the JSON.
+
+Set values for `data_dir`, `datafile`, `figname` and `labels` in the top of the script and execute `python -m clearance_widths`.
+
+That writes two spreadsheet summary files and two PNG figures into `data_dir`.
+
+
