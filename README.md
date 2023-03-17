@@ -1,14 +1,17 @@
 # Artificial Muscle Data Presentation
 
-For any Python script to run install requirements (e.g., by using a virtual environment).
+For any Python script to run install requirements (e.g., by using a virtual environment). Run 
+
+`python -m artificial-muscle -h`
+
+to find out input requirements to run the different studies.
 
 ## Conductivity Study
-A Python 3 script to construct a plot of conductivity data.
+A Python 3 script to construct a plot of conductivity data. The conductivity study focuses on answering the question of
+how does adding a conductive material to the resin affect the cured resin's conductivity.
 
 ### Usage
-To run the Python script install requirements (e.g., by 
-using a virtual environment). Then in the project 
-direcory execute
+To run the Python script install requirements (e.g., by using a virtual environment). Then in the project directory execute
 
 `python ./main.py datafilename`
 
@@ -30,9 +33,49 @@ _sheet_ with the following columns:
 Meta data for a given spreadsheet are specified in 
 `config.py`. Change it accordingly.
 
-The output is a semi-logarthmic plot of conductivity
+The output is a semi-logarithmic plot of conductivity
 values, which is saved in PNG format to 
 the same directory the spreadsheet was loaded from.
+
+## Channel Width Study
+The channel width study compares how different orientations of printing the channels affects channel widths. Specifically,
+how does printing the channel parallel or perpendicular to the print direction affect the channel width before and
+after baking.
+
+The code requires passing an Excel file that contains a tab with the following filenames:
+ * py_hp_sm_prior
+ * py_vp_sm_prior
+ * py_hp_sm_past
+ * py_vp_sm_past
+ * py_hp_br_prior
+ * py_vp_br_prior
+ * py_hp_br_past
+ * py_vp_br_past
+
+where hp denotes perpendicular and vp parallel print direction, respectively; sm denotes sacrificial material, br denotes
+black resin, and prior and past denote whether the specimen has been baked or not.
+
+The tabs need to be of the following format:
+| Position | Column Header | Datatype | Meaning                                          |
+| ------- | ------------- | -------- |--------------------------------------------------|
+| 1 | label | str | An Enum: sacrificial material or black resin |
+| 2 | x | int | X-values |
+| 3 | y | float | Y-values |
+| 4 | err | float | The error (e.g., standard error of the mean) for each Y-value |
+
+Executing the code generates four different kinds of scatter plots, depending on the type parameter. 
+| Type Parameter | Plot Content |
+| -------------- | ------------ |
+| hp_sm | Channels containing sacrificial material, printed perpendicular before and after baking |
+| vp_sm | Channels containing sacrificial material, printed parallel before and after baking |
+| hp_br | Channels containing black resin material, printed perpendicular before and after baking |
+| vp_br | Channels containing black resin material, printed parallel before and after baking |
+
+In the root directory execute
+
+`python -m artificial-muscle <path-to-Excel-datafile> <Type Parameter>`
+
+Files containing the plots are written to the same directory where the Excel datafile resides.
 
 ## Clearance Study
 
