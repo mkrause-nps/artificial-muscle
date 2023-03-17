@@ -3,6 +3,10 @@
 """
 Configuration file
 
+If you work on WSL2 Linux it seems best to transfer any data files to the Linux instance
+and set the output_dir accordingly. I've made a few attempts to call files from Linux on
+Windows 10, but all failed.
+
 Parameters
 ----------
 output_dir: string
@@ -22,7 +26,8 @@ legend_loc: str
 
 
 class Config:
-    output_dir: str = 'C:\\Users\\mkrause.RIZIA-PC\\OneDrive - Naval Postgraduate School\\artificial_muscle\\data'
+    #output_dir: str = 'C:\\Users\\mkrause.RIZIA-PC\\OneDrive - Naval Postgraduate School\\artificial_muscle\\data'
+    output_dir: str = '/home/mkrause/data/width/'
     suffix: str = None,
     plot_title: str = None,
     plot_xlabel: str = 'fraction CNF added (weight %)'

@@ -13,13 +13,31 @@ from src.figure import Figure
 from src.channel_width import ChannelWidth
 from src.widths import Widths
 
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
+logger = logging.getLogger(__name__)
+
+
+"""
+ABBREVIATIONS
+
+hp: horizontal print or perpendicular print direction
+vp: vertical print or parallel print direction
+
+br: black resin
+sm: sacrificial material (AKA wax)
+
+"""
 
 
 class Type(Enum):
     """User specifies the type of data to be plotted on command line."""
     conductivity = 'conductivity'
     width = 'width'
+    hp_sm = 'hp_sm'
+    vp_sm = 'vp_sm'
+    hp_br = 'hp_br'
+    vp_br = 'vp_br'
     hp_prior = 'hp_prior'
     vp_prior = 'vp_prior'
     hp_past = 'hp_past'
@@ -33,7 +51,8 @@ class Util:
 
     @classmethod
     def plot_channel_widths(cls, sm_sheet, br_sheet):
-        Config.legend = ['sacrificial material', 'black resin (reference)']
+        #Config.legend = ['sacrificial material', 'black resin (reference)']
+        Config.legend = ['before baking', 'after baking']
         Config.xlims = {'min': 0, 'max': 1600}
         Config.plot_xlabel = r'set channel width ($\mu$m)'
         Config.plot_ylabel = r'measured channel width ($\mu$m)'
@@ -58,6 +77,13 @@ class Util:
 
 def config_channel_study():
     Config.legend = ['sacrificial material', 'black resin (reference)']
+    Config.xlims = {'min': 0, 'max': 1600}
+    Config.plot_xlabel = r'set channel width ($\mu$m)'
+    Config.plot_ylabel = r'measured channel width ($\mu$m)'
+
+
+def config_channel_study2():
+    Config.legend = ['before baking', 'after baking']
     Config.xlims = {'min': 0, 'max': 1600}
     Config.plot_xlabel = r'set channel width ($\mu$m)'
     Config.plot_ylabel = r'measured channel width ($\mu$m)'
@@ -95,6 +121,26 @@ elif args.type == Type.width:
         except ValueError:
             logging.error('Config.py_all is either empty or has whitespace - set to existing sheet name')
             sys.exit()
+
+elif args.type == Type.hp_sm:
+    Config.plot_title = 'Sacrificial material, perpendicular to print direction'
+    config_channel_study2()
+    Util.plot_channel_widths(sm_sheet='py_hp_sm_prior', br_sheet='py_hp_sm_past')
+elif args.type == Type.vp_sm:
+    Config.plot_title = 'Sacrificial material, vertical to print direction'
+    config_channel_study2()
+    Util.plot_channel_widths(sm_sheet='py_vp_sm_prior', br_sheet='py_vp_sm_past')
+
+elif args.type == Type.hp_br:
+    Config.plot_title = 'Black resin, perpendicular to print direction'
+    config_channel_study2()
+    Util.plot_channel_widths(sm_sheet='py_hp_br_prior', br_sheet='py_hp_br_past')
+elif args.type == Type.vp_br:
+    Config.plot_title = 'Black resin, vertical to print direction'
+    config_channel_study2()
+    Util.plot_channel_widths(sm_sheet='py_vp_br_prior', br_sheet='py_vp_br_past')
+
+
 elif args.type == Type.hp_prior:
     Config.plot_title = 'Channels perpendicular to print direction - before baking'
     config_channel_study()
