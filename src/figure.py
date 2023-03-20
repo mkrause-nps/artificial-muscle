@@ -30,6 +30,7 @@ class Figure:
     @classmethod
     def plot(cls, excel_filename, ax,
              sheet_name='Sheet1', symbol='-ob', plot_type='linear', title=None, legend=False, diagonal=False) -> None:
+        """Scatter plot"""
         df = pd.read_excel(excel_filename, sheet_name=sheet_name, index_col=1)
         pd.DataFrame.info(df)
         plt.gca()
@@ -61,6 +62,7 @@ class Figure:
 
     @classmethod
     def plot_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str, past: str, prior: str):
+        """Stem plot"""
         title = f'Channel widths of {material}, printed {direction}'
         xlabel = 'channel ID'
         ylabel = rf'{past} width - {prior} width ($\mu$m)'
@@ -73,6 +75,7 @@ class Figure:
 
     @classmethod
     def save(cls, excel_filename: str, dest: str, suffix: str) -> None:
+        """Write file with plot to disk"""
         figure_filename = cls.__get_filename(excel_filename) + '_' + suffix + '.png'
         dest = os.path.join(dest, figure_filename)
         plt.savefig(dest)
