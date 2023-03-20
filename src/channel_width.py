@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import numpy
 import pandas as pd
 from src.config import Config
@@ -12,8 +13,8 @@ class ChannelWidth:
         self.past: dict = past
         self.differences: pd.DataFrame = pd.DataFrame()
 
-    def get_differences(self):
-        """Differences of measured channel width (in um) between two measurement times."""
+    def get_differences(self) -> None:
+        """Differences of channel width (in um) measured under two conditions."""
         self.differences = pd.DataFrame(
             data={
                 'channel_id': self.__get_id_column(),
@@ -43,7 +44,7 @@ class ChannelWidth:
         )
 
     @staticmethod
-    def __get_mean(df: pd.DataFrame, key_to_group_by: str, col_to_get_mean) -> pd.Series:
+    def __get_mean(df: pd.DataFrame, key_to_group_by: str, col_to_get_mean: str) -> pd.Series:
         grouped = df[col_to_get_mean].groupby(df[key_to_group_by])
         return grouped.mean()
 

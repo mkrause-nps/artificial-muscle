@@ -50,7 +50,8 @@ class Type(Enum):
 class Util:
 
     @classmethod
-    def plot_channel_widths(cls, sm_sheet, br_sheet):
+    def plot_channel_widths(cls, sm_sheet: str, br_sheet: str) -> None:
+        """Create scatter plots of set and measured width under two conditions."""
         #Config.legend = ['sacrificial material', 'black resin (reference)']
         Config.legend = ['before baking', 'after baking']
         Config.xlims = {'min': 0, 'max': 1600}
@@ -62,6 +63,7 @@ class Util:
 
     @classmethod
     def run_widths_difference(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
+        """Create stem plots of differences recorded under two conditions."""
         experiment_specs = ChannelWidth(dataframe=data_frame, prior=specs['before'], past=specs['after'])
         experiment_specs.get_differences()
         Figure.plot_differences(
@@ -75,14 +77,14 @@ class Util:
         Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=specs['suffix'])
 
 
-def config_channel_study():
+def config_channel_study() -> None:
     Config.legend = ['sacrificial material', 'black resin (reference)']
     Config.xlims = {'min': 0, 'max': 1600}
     Config.plot_xlabel = r'set channel width ($\mu$m)'
     Config.plot_ylabel = r'measured channel width ($\mu$m)'
 
 
-def config_channel_study2():
+def config_channel_study2() -> None:
     Config.legend = ['before baking', 'after baking']
     Config.xlims = {'min': 0, 'max': 1600}
     Config.plot_xlabel = r'set channel width ($\mu$m)'
