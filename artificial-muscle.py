@@ -127,7 +127,7 @@ elif args.type == Type.hp_sm:
     config_channel_study2()
     Util.plot_channel_widths(sm_sheet='py_hp_sm_prior', br_sheet='py_hp_sm_past')
 elif args.type == Type.vp_sm:
-    Config.plot_title = 'Sacrificial material, vertical to print direction'
+    Config.plot_title = 'Sacrificial material, parallel to print direction'
     config_channel_study2()
     Util.plot_channel_widths(sm_sheet='py_vp_sm_prior', br_sheet='py_vp_sm_past')
 
@@ -136,7 +136,7 @@ elif args.type == Type.hp_br:
     config_channel_study2()
     Util.plot_channel_widths(sm_sheet='py_hp_br_prior', br_sheet='py_hp_br_past')
 elif args.type == Type.vp_br:
-    Config.plot_title = 'Black resin, vertical to print direction'
+    Config.plot_title = 'Black resin, parallel to print direction'
     config_channel_study2()
     Util.plot_channel_widths(sm_sheet='py_vp_br_prior', br_sheet='py_vp_br_past')
 
