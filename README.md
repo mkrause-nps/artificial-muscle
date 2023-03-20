@@ -21,14 +21,14 @@ an Excel file, e.g., `C:\data.xlsx`.
 The Excel file needs to contain at least one 
 _sheet_ with the following columns:
 
-| Position | Column Header | Datatype | Meaning                                          |
-| ------- | ------------- | -------- |--------------------------------------------------|
-| 1 | label | str | Describes percentage of substance mixed to resin |
-| 2 | x | float | X-values |
-| 3 | filtered | bool | Is the mixture filtered or not |
-| 4 | y | float | Y-values |
-| 5 | err | float | The error (e.g., standard error of the mean) for each Y-value |
-| 6 | n | integer | The number of samples of Y for a given X |
+| Position | Column Header | Datatype | Meaning                                                       |
+|----------|---------------|----------|---------------------------------------------------------------|
+| 1        | label         | str      | Describes percentage of substance mixed to resin              |
+| 2        | x             | float    | X-values                                                      |
+| 3        | filtered      | bool     | Is the mixture filtered or not                                |
+| 4        | y             | float    | Y-values                                                      |
+| 5        | err           | float    | The error (e.g., standard error of the mean) for each Y-value |
+| 6        | n             | integer  | The number of samples of Y for a given X                      |
 
 Meta data for a given spreadsheet are specified in 
 `config.py`. Change it accordingly.
@@ -56,20 +56,22 @@ where hp denotes perpendicular and vp parallel print direction, respectively; sm
 black resin, and prior and past denote whether the specimen has been baked or not.
 
 The tabs need to be of the following format:
-| Position | Column Header | Datatype | Meaning                                          |
-| ------- | ------------- | -------- |--------------------------------------------------|
-| 1 | label | str | An Enum: sacrificial material or black resin |
-| 2 | x | int | X-values |
-| 3 | y | float | Y-values |
-| 4 | err | float | The error (e.g., standard error of the mean) for each Y-value |
 
-Executing the code generates four different kinds of scatter plots, depending on the type parameter. 
-| Type Parameter | Plot Content |
-| -------------- | ------------ |
-| hp_sm | Channels containing sacrificial material, printed perpendicular before and after baking |
-| vp_sm | Channels containing sacrificial material, printed parallel before and after baking |
-| hp_br | Channels containing black resin material, printed perpendicular before and after baking |
-| vp_br | Channels containing black resin material, printed parallel before and after baking |
+| Position | Column Header | Datatype | Meaning                                                       |
+|----------|---------------|----------|---------------------------------------------------------------|
+| 1        | label         | str      | An Enum: sacrificial material or black resin                  |
+| 2        | x             | int      | X-values                                                      |
+| 3        | y             | float    | Y-values                                                      |
+| 4        | err           | float    | The error (e.g., standard error of the mean) for each Y-value |
+
+Executing the code generates four different kinds of scatter plots, depending on the type parameter.
+
+| Type Parameter | Plot Content                                                                            |
+|----------------|-----------------------------------------------------------------------------------------|
+| hp_sm          | Channels containing sacrificial material, printed perpendicular before and after baking |
+| vp_sm          | Channels containing sacrificial material, printed parallel before and after baking      |
+| hp_br          | Channels containing black resin material, printed perpendicular before and after baking |
+| vp_br          | Channels containing black resin material, printed parallel before and after baking      |
 
 In the root directory execute
 
