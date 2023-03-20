@@ -8,6 +8,7 @@ import numpy
 import pandas as pd
 import matplotlib.pyplot as plt
 from src.config import Config
+from src.channel_width import ChannelWidth
 
 
 class Figure:
@@ -74,6 +75,36 @@ class Figure:
         ax.set(xlabel=xlabel, ylabel=ylabel)
 
     @classmethod
+    def plot_channel_widths_and_differences(cls, widths: pd.DataFrame, diffs: pd.DataFrame, material: str,
+                                            direction: str, past: str, prior: str):
+        """Scatter plot of width prior to and past baking and their differences in one graph"""
+        title = f'Channel widths of {material.replace("_", " ")}, printed {direction}'
+        xlabel = 'Set channel width ($\mu$m)'
+        ylabel = rf'Measured channel width ($\mu$m)'
+        ylabel2 = rf'{past} width - {prior} width ($\mu$m)'
+
+        fig, ax1 = plt.subplots()
+
+        # Create plot.
+        plt.errorbar(x=widths['channel_id'], y=widths['width_prior'], yerr=widths['width_prior_err'], fmt='-ob', capsize=4)
+        plt.errorbar(x=widths['channel_id'], y=widths['width_past'], yerr=widths['width_past_err'], fmt='-or', capsize=4)
+        #plt.scatter(x=widths['channel_id'], y=diffs['width_diff'], s=20)
+
+        ax1.set_title(title)
+        ax1.set(xlabel=xlabel, ylabel=ylabel)
+        ax1.set_xlim(Config.xlims['min'], Config.xlims['max'])
+        ax1.set_ylim(Config.ylims['min'], Config.ylims['max'])
+        ax1.legend(Config.legend, loc=Config.legend_loc)
+        ax1.set_box_aspect(1)
+
+        ax2 = ax1.twinx()  # instantiate a second axis that shares the same x-axis
+        color = 'green'
+        plt.scatter(widths['channel_id'], diffs['width_diff'], color=color)
+        ax2.set_ylabel(ylabel2, color=color)  # we already handled the x-label with ax1
+        ax2.tick_params(axis='y', labelcolor=color)
+        ax2.set_box_aspect(1)
+
+    @classmethod
     def save(cls, excel_filename: str, dest: str, suffix: str) -> None:
         """Write file with plot to disk"""
         figure_filename = cls.__get_filename(excel_filename) + '_' + suffix + '.png'
@@ -98,4 +129,4 @@ class Figure:
         if num_dots == 1:
             return filename.split('.')[0]
         else:
-            return  filename.split('.')[-2].split('\\')[-1]
+            return filename.split('.')[-2].split('\\')[-1]
