@@ -13,13 +13,11 @@ how does adding a conductive material to the resin affect the cured resin's cond
 ### Usage
 To run the Python script install requirements (e.g., by using a virtual environment). Then in the project directory execute
 
-`python ./main.py datafilename`
+`python -m artificial-muscle datafilename conductivity`
 
-where `datafilename` is the absolute path to 
-an Excel file, e.g., `C:\data.xlsx`.
+where `datafilename` is the absolute path to an Excel file, e.g., `C:\data.xlsx`, or just the filename.
 
-The Excel file needs to contain at least one 
-_sheet_ with the following columns:
+The Excel file needs to contain at least one _sheet_ with the following columns:
 
 | Position | Column Header | Datatype | Meaning                                                       |
 |----------|---------------|----------|---------------------------------------------------------------|
@@ -30,12 +28,9 @@ _sheet_ with the following columns:
 | 5        | err           | float    | The error (e.g., standard error of the mean) for each Y-value |
 | 6        | n             | integer  | The number of samples of Y for a given X                      |
 
-Meta data for a given spreadsheet are specified in 
-`config.py`. Change it accordingly.
+Meta data for a given spreadsheet are specified in `config.py`. Change it according to your needs.
 
-The output is a semi-logarithmic plot of conductivity
-values, which is saved in PNG format to 
-the same directory the spreadsheet was loaded from.
+The output is a semi-logarithmic plot of conductivity values, which is saved in PNG format to the same directory the spreadsheet was loaded from.
 
 ## Channel Width Study
 The channel width study compares how different orientations of printing the channels affects channel widths. Specifically,
