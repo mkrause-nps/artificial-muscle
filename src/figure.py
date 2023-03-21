@@ -8,7 +8,6 @@ import numpy
 import pandas as pd
 import matplotlib.pyplot as plt
 from src.config import Config
-from src.channel_width import ChannelWidth
 
 
 class Figure:
