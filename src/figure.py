@@ -72,6 +72,20 @@ class Figure:
         ax.set(xlabel=xlabel, ylabel=ylabel)
 
     @classmethod
+    def plot_widths_fractional_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str):
+        """Bar plot"""
+        title = f"{material.replace('_', ' ')}, printed {direction}"
+        xlabel = 'Channel ID'
+        ylabel = rf'Fractional expansion (%)'
+        color = 'gray'
+
+        # Create plot.
+        fig, ax = plt.subplots()
+        plt.bar(x=x, height=y, width=0.4, color=color)
+        ax.set_title(title)
+        ax.set(xlabel=xlabel, ylabel=ylabel)
+
+    @classmethod
     def plot_channel_widths_and_differences(cls, widths: pd.DataFrame, diffs: pd.DataFrame, material: str,
                                             direction: str, past: str, prior: str):
         """Scatter plot of width prior to and past baking and their differences in one graph"""

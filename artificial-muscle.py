@@ -52,6 +52,7 @@ class Type(Enum):
 
 
 class Run:
+    """Runners for each user selected option"""
 
     @classmethod
     def plot_channel_widths(cls, before_bake: str, after_bake: str) -> None:
@@ -81,6 +82,19 @@ class Run:
             past=experiment_specs.past['status']
         )
         Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=specs['suffix'])
+
+    @classmethod
+    def plot_widths_fractional_difference(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
+        """Plots the fraction of channel expansion, so (after - before) * 100 for each channel ID"""
+        channel_width = ChannelWidth(dataframe=data_frame, prior=specs['before'], past=specs['after'])
+        channel_width.get_fractional_differences()
+        Figure.plot_widths_fractional_differences(
+            x=channel_width.differences['channel_id'].astype("string"),  # casting to string makes x-axis categorical
+            y=channel_width.differences['width_frac_diff'],
+            material=channel_width.prior['material'],
+            direction=channel_width.prior['print_direction']
+        )
+        Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=f"{specs['suffix']}_bar")
 
     @classmethod
     def plot_channel_width_and_difference(cls, excel_filename: str, data_frame_: pd.DataFrame, specs_: dict):
@@ -144,7 +158,7 @@ def main():
         df = Figure.get_dataframe(excel_filename=filename)
         for key in Widths.specs:
             try:
-                Run.plot_widths_difference(
+                Run.plot_widths_fractional_difference(
                     excel_filename=filename,
                     data_frame=df,
                     specs=Widths.specs[key]

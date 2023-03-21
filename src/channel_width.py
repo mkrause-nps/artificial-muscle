@@ -37,6 +37,17 @@ class ChannelWidth:
         )
         self.differences.reset_index(drop=True, inplace=True)  # not sure why the index was messed but this fixes it
 
+    def get_fractional_differences(self) -> None:
+        width_frac_diff = (self.__get_means(time_measured=self.past) / self.__get_means(time_measured=self.prior)) * 100
+        self.differences = pd.DataFrame(
+            data={
+                'channel_id': self.__get_id_column(),
+                'width_frac_diff': width_frac_diff
+            },
+            columns=['channel_id', 'width_frac_diff']
+        )
+        self.differences.reset_index(drop=True, inplace=True)
+
     def __filter_df(self, mask: dict) -> pd.DataFrame:
         """Filter dataframe on three columns of interest and return as new df"""
         return self.df.loc[
