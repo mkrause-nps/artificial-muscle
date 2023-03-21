@@ -36,6 +36,6 @@ class Config:
     xlims: dict = {'min': 0, 'max': 14}
     ylims: dict = None  # {'min': 10e-8, 'max': 10e2}
     legend: list = []  # ['unfiltered', 'filtered']
-    legend_loc: str = 'lower right'
+    legend_loc: str = 'upper left'  # 'lower right'
     measured_widths_col_name: str = 'widths_um'
     py_all: str = 'py_all'
