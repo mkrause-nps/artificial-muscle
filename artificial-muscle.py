@@ -29,6 +29,9 @@ sm: sacrificial material (AKA wax)
 
 """
 
+global filename
+global ax
+
 
 class Type(Enum):
     """User specifies the type of data to be plotted on command line."""
@@ -60,9 +63,9 @@ class Run:
         Config.xlims = {'min': 0, 'max': 1600}
         Config.plot_xlabel = r'set channel width ($\mu$m)'
         Config.plot_ylabel = r'measured channel width ($\mu$m)'
-        Figure.plot(excel_filename=filename, ax=ax, sheet_name=before_bake, symbol='-ob')
-        Figure.plot(excel_filename=filename, ax=ax, sheet_name=after_bake,
-                    title=Config.plot_title, symbol='-or', legend=True, diagonal=True)
+        Figure.plot_conductivity(excel_filename=filename, ax=ax, sheet_name=before_bake, symbol='-ob')
+        Figure.plot_conductivity(excel_filename=filename, ax=ax, sheet_name=after_bake,
+                                 title=Config.plot_title, symbol='-or', legend=True, diagonal=True)
 
     @classmethod
     def plot_widths_difference(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
@@ -133,8 +136,8 @@ def main():
         # Config.plot_title = 'Conductivity of carbon nanofibers in TangoPlus'
         Config.plot_xlabel = 'fraction CMPs added (weight %)'
         # Config.legend = ['sacrificial material', 'black resin (reference)']
-        Figure.plot(excel_filename=filename, ax=ax,
-                    sheet_name='Sheet1', title=Config.plot_title, symbol='-ob', plot_type='log')
+        Figure.plot_conductivity(excel_filename=filename, ax=ax,
+                                 sheet_name='Sheet1', title=Config.plot_title, symbol='-ob', plot_type='log')
         # Figure.plot(excel_filename=filename, ax=ax, sheet_name='Sheet2', symbol='-or', plot_type='log', legend=True)
     elif args.type == Type.width:
         is_file_save = False  # with this switch figures are saved with each iteration of for loop
