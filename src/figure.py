@@ -2,8 +2,6 @@
 
 import os
 import logging
-import sys
-
 import numpy
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -28,8 +26,8 @@ class Figure:
         return pd.read_excel(excel_filename, sheet_name=Config.py_all)
 
     @classmethod
-    def plot(cls, excel_filename, ax,
-             sheet_name='Sheet1', symbol='-ob', plot_type='linear', title=None, legend=False, diagonal=False) -> None:
+    def plot_conductivity(cls, excel_filename, ax, sheet_name='Sheet1', symbol='-ob', plot_type='linear', title=None,
+                          legend=False, diagonal=False) -> None:
         """Scatter plot"""
         df = pd.read_excel(excel_filename, sheet_name=sheet_name, index_col=1)
         pd.DataFrame.info(df)
@@ -65,7 +63,7 @@ class Figure:
         """Stem plot"""
         title = f'Channel widths of {material}, printed {direction}'
         xlabel = 'channel ID'
-        ylabel = rf'{past} width - {prior} width ($\mu$m)'
+        ylabel = rf'after width - before width ($\mu$m)'
 
         # Create plot.
         fig, ax = plt.subplots()
@@ -80,15 +78,18 @@ class Figure:
         title = f'Channel widths of {material.replace("_", " ")}, printed {direction}'
         xlabel = 'Set channel width ($\mu$m)'
         ylabel = rf'Measured channel width ($\mu$m)'
-        ylabel2 = rf'{past} width - {prior} width ($\mu$m)'
+        ylabel2 = rf'after width - before width ($\mu$m)'
 
         fig, ax1 = plt.subplots()
 
         # Create plot.
-        plt.errorbar(x=widths['channel_id'], y=widths['width_prior'], yerr=widths['width_prior_err'], fmt='-ob', capsize=4)
-        plt.errorbar(x=widths['channel_id'], y=widths['width_past'], yerr=widths['width_past_err'], fmt='-or', capsize=4)
-        #plt.scatter(x=widths['channel_id'], y=diffs['width_diff'], s=20)
+        plt.errorbar(x=widths['channel_id'], y=widths['width_prior'], yerr=widths['width_prior_err'],
+                     fmt='-ob', capsize=4)
+        plt.errorbar(x=widths['channel_id'], y=widths['width_past'], yerr=widths['width_past_err'],
+                     fmt='-or', capsize=4)
+        # plt.scatter(x=widths['channel_id'], y=diffs['width_diff'], s=20)
 
+        # Compose axis and labels for right y-axis:
         ax1.set_title(title)
         ax1.set(xlabel=xlabel, ylabel=ylabel)
         ax1.set_xlim(Config.xlims['min'], Config.xlims['max'])
@@ -96,9 +97,13 @@ class Figure:
         ax1.legend(Config.legend, loc=Config.legend_loc)
         ax1.set_box_aspect(1)
 
+        cls.__plot_diagonal()
+
+        # Compose axis and labels for left y-axis:
         ax2 = ax1.twinx()  # instantiate a second axis that shares the same x-axis
         color = 'green'
         plt.scatter(widths['channel_id'], diffs['width_diff'], color=color)
+        ax2.set_ylim(0, 1100)
         ax2.set_ylabel(ylabel2, color=color)  # we already handled the x-label with ax1
         ax2.tick_params(axis='y', labelcolor=color)
         ax2.set_box_aspect(1)
@@ -122,7 +127,7 @@ class Figure:
         plt.plot(xvals, yvals, '--k', label='_nolegend_')
 
     @staticmethod
-    def __get_filename(filename: str):
+    def __get_filename(filename: str) -> str:
         """Getting the filename depending on whether it is absolute or relative."""
         num_dots = filename.count('.')
         if num_dots == 1:
