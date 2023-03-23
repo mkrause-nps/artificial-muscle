@@ -109,7 +109,10 @@ class Figure:
         ax1.set(xlabel=xlabel, ylabel=ylabel)
         ax1.set_xlim(Config.xlims['min'], Config.xlims['max'])
         ax1.set_ylim(Config.ylims['min'], Config.ylims['max'])
-        ax1.legend(Config.legend, loc=Config.legend_loc)
+        if material == 'black_resin' and direction == 'perpendicular':
+            ax1.legend(Config.legend, loc='lower right')
+        else:
+            ax1.legend(Config.legend, loc=Config.legend_loc)
         ax1.set_box_aspect(1)
 
         if unity_line:
@@ -121,8 +124,10 @@ class Figure:
         plt.scatter(widths['channel_id'], diffs['width_diff'], color=color)
         if direction == 'parallel':
             ax2.set_ylim(0, 300)
+        elif material == 'black_resin' and direction == 'perpendicular':
+            ax2.set_ylim(0, 400)
         else:
-            ax2.set_ylim(0, 200)
+            ax2.set_ylim(0, 400)
         ax2.set_ylabel(ylabel2, color=color)  # we already handled the x-label with ax1
         ax2.tick_params(axis='y', labelcolor=color)
         ax2.set_box_aspect(1)
