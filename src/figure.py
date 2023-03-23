@@ -72,8 +72,8 @@ class Figure:
         ax.set(xlabel=xlabel, ylabel=ylabel)
 
     @classmethod
-    def plot_widths_fractional_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str):
-        """Bar plot"""
+    def plot_widths_fractional_differences(cls, x: numpy.ndarray, y: numpy.ndarray, yerr: numpy.ndarray, material: str, direction: str):
+        """Scatter plot with errors"""
         title = f"{material.replace('_', ' ')}, printed {direction}"
         xlabel = 'Channel ID'
         ylabel = rf'Fractional expansion (%)'
@@ -81,13 +81,15 @@ class Figure:
 
         # Create plot.
         fig, ax = plt.subplots()
-        plt.bar(x=x, height=y, width=0.4, color=color)
+        plt.errorbar(x=x, y=y, yerr=yerr, color=color, fmt='o', capsize=8)
         ax.set_title(title)
         ax.set(xlabel=xlabel, ylabel=ylabel)
+        ax.set_ylim(-10 , 70)
+        cls.__plot_zero_x_line()
 
     @classmethod
     def plot_channel_widths_and_differences(cls, widths: pd.DataFrame, diffs: pd.DataFrame, material: str,
-                                            direction: str, past: str, prior: str):
+                                            direction: str, unity_line: bool=False):
         """Scatter plot of width prior to and past baking and their differences in one graph"""
         title = f'Channel widths of {material.replace("_", " ")}, printed {direction}'
         xlabel = 'Set channel width ($\mu$m)'
@@ -101,7 +103,6 @@ class Figure:
                      fmt='-ob', capsize=4)
         plt.errorbar(x=widths['channel_id'], y=widths['width_past'], yerr=widths['width_past_err'],
                      fmt='-or', capsize=4)
-        # plt.scatter(x=widths['channel_id'], y=diffs['width_diff'], s=20)
 
         # Compose axis and labels for right y-axis:
         ax1.set_title(title)
@@ -111,13 +112,17 @@ class Figure:
         ax1.legend(Config.legend, loc=Config.legend_loc)
         ax1.set_box_aspect(1)
 
-        cls.__plot_diagonal()
+        if unity_line:
+            cls.__plot_diagonal()
 
         # Compose axis and labels for left y-axis:
         ax2 = ax1.twinx()  # instantiate a second axis that shares the same x-axis
         color = 'green'
         plt.scatter(widths['channel_id'], diffs['width_diff'], color=color)
-        ax2.set_ylim(0, 1100)
+        if direction == 'parallel':
+            ax2.set_ylim(0, 300)
+        else:
+            ax2.set_ylim(0, 200)
         ax2.set_ylabel(ylabel2, color=color)  # we already handled the x-label with ax1
         ax2.tick_params(axis='y', labelcolor=color)
         ax2.set_box_aspect(1)
@@ -139,6 +144,11 @@ class Figure:
         xvals = range(0, Config.xlims['max'])
         yvals = range(0, Config.xlims['max'])
         plt.plot(xvals, yvals, '--k', label='_nolegend_')
+
+    @staticmethod
+    def __plot_zero_x_line() -> None:
+        """Add a line parallel to the x-axis."""
+        plt.axhline(y=0, color='k', linestyle='--')
 
     @staticmethod
     def __get_filename(filename: str) -> str:

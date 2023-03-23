@@ -86,11 +86,26 @@ class Run:
     @classmethod
     def plot_widths_fractional_difference(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
         """Plots the fraction of channel expansion, so (after - before) * 100 for each channel ID"""
+        # Note: this method is currently not used - potentially triage.
         channel_width = ChannelWidth(dataframe=data_frame, prior=specs['before'], past=specs['after'])
         channel_width.get_fractional_differences()
         Figure.plot_widths_fractional_differences(
             x=channel_width.differences['channel_id'].astype("string"),  # casting to string makes x-axis categorical
             y=channel_width.differences['width_frac_diff'],
+            material=channel_width.prior['material'],
+            direction=channel_width.prior['print_direction']
+        )
+        Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=f"{specs['suffix']}_bar")
+
+    @classmethod
+    def plot_widths_fractional_difference2(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
+        """Plots the fraction of channel expansion, so (after - before) / before for each channel ID"""
+        channel_width = ChannelWidth(dataframe=data_frame, prior=specs['before'], past=specs['after'])
+        channel_width.get_fractional_differences2()
+        Figure.plot_widths_fractional_differences(
+            x=channel_width.differences['channel_id'].astype("string"),  # casting to string makes x-axis categorical
+            y=channel_width.differences['width_frac_diff'],
+            yerr=channel_width.differences['width_err'],
             material=channel_width.prior['material'],
             direction=channel_width.prior['print_direction']
         )
@@ -106,9 +121,7 @@ class Run:
             widths=channel_width.widths,
             diffs=channel_width.differences,
             material=channel_width.prior['material'],
-            direction=channel_width.prior['print_direction'],
-            prior=channel_width.prior['status'],
-            past=channel_width.past['status']
+            direction=channel_width.prior['print_direction']
         )
 
         Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=specs_['suffix'])
@@ -123,15 +136,15 @@ def config_channel_study() -> None:
 
 def config_channel_study2() -> None:
     Config.legend = ['before baking', 'after baking']
-    Config.xlims = {'min': 0, 'max': 1600}
-    Config.ylims = Config.xlims
+    Config.xlims = {'min': 0, 'max': 1100}
+    Config.ylims = {'min': 0, 'max': 1600}
     Config.plot_xlabel = r'set channel width ($\mu$m)'
     Config.plot_ylabel = r'measured channel width ($\mu$m)'
 
 
 def main():
 
-    is_file_save = True
+    is_file_save: bool = True
 
     parser = argparse.ArgumentParser(description="Artificial Muscle Project")
     parser.add_argument('filename', type=str, help='Path to the Excel file')
@@ -158,7 +171,7 @@ def main():
         df = Figure.get_dataframe(excel_filename=filename)
         for key in Widths.specs:
             try:
-                Run.plot_widths_fractional_difference(
+                Run.plot_widths_fractional_difference2(
                     excel_filename=filename,
                     data_frame=df,
                     specs=Widths.specs[key]

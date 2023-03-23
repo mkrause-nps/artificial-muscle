@@ -48,6 +48,34 @@ class ChannelWidth:
         )
         self.differences.reset_index(drop=True, inplace=True)
 
+    def get_fractional_differences2(self) -> None:
+        after = self.__get_means(time_measured=self.past)
+        before = self.__get_means(time_measured=self.prior)
+        width_frac_diff = ((after - before) / before) * 100
+
+        propagated_err = self.__get_propagated_error()
+
+        self.differences = pd.DataFrame(
+            data={
+                'channel_id': self.__get_id_column(),
+                'width_frac_diff': width_frac_diff,
+                'width_err': propagated_err
+            },
+            columns=['channel_id', 'width_frac_diff', 'width_err']
+        )
+        self.differences.reset_index(drop=True, inplace=True)
+
+    def __get_propagated_error(self) -> pd.Series:
+        """Return the propagated error (described in document in one of the directories)."""
+        after = self.__get_means(time_measured=self.past)
+        before = self.__get_means(time_measured=self.prior)
+        after_err = self.__get_stdevs(time_measured=self.past)
+        before_err = self.__get_stdevs(time_measured=self.prior)
+
+        propagated_err = ((after_err / before**2) + (before_err * after**2 / before**4)) * 100
+
+        return propagated_err
+
     def __filter_df(self, mask: dict) -> pd.DataFrame:
         """Filter dataframe on three columns of interest and return as new df"""
         return self.df.loc[
@@ -77,11 +105,13 @@ class ChannelWidth:
 
     @staticmethod
     def __get_mean(df: pd.DataFrame, key_to_group_by: str, col_to_get_mean: str) -> pd.Series:
-        grouped = df[col_to_get_mean].groupby(df[key_to_group_by])
+        """Return the mean of chip IDs for a given status, print direction, material, and channel ID"""
+        grouped: pd.SeriesGroupBy = df[col_to_get_mean].groupby(df[key_to_group_by])
         return grouped.mean()
 
     @staticmethod
     def __get_stdev(df: pd.DataFrame, key_to_group_by: str, col_to_get_mean: str) -> pd.Series:
+        """Return the standard deviation of chip IDs for a given status, print direction, material, and channel ID"""
         grouped = df[col_to_get_mean].groupby(df[key_to_group_by])
         return grouped.std()
 
