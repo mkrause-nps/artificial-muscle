@@ -34,7 +34,7 @@ class Figure:
                           ax_obj: matplotlib.axes = None, title=None, legend=False, diagonal=False) -> matplotlib.axes:
         """Creates scatter plot and returns its axes object"""
         df = pd.read_excel(excel_filename, sheet_name=sheet_name, index_col=1)
-        pd.DataFrame.info(df)
+        #pd.DataFrame.info(df)
         # plt.gca()
         if not ax_obj:
             _, ax_obj = cls.get_figure_handle()
