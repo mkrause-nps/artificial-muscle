@@ -8,8 +8,6 @@ import matplotlib.axes
 import matplotlib.pyplot as plt
 from src.config import Config
 
-ax: matplotlib.axes = None
-
 
 class Figure:
 
