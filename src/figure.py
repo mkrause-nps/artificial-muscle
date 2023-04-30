@@ -31,18 +31,18 @@ class Figure:
 
     @classmethod
     def plot_conductivity(cls, excel_filename, sheet_name='Sheet1', symbol='-ob', y_scale='linear',
-                          ax: matplotlib.axes= None, title=None, legend=False, diagonal=False) -> matplotlib.axes:
+                          ax_obj: matplotlib.axes= None, title=None, legend=False, diagonal=False) -> matplotlib.axes:
         """Creates scatter plot and returns its axes object"""
         df = pd.read_excel(excel_filename, sheet_name=sheet_name, index_col=1)
         pd.DataFrame.info(df)
         #plt.gca()
-        if not ax:
-            _, ax = cls.get_figure_handle()
+        if not ax_obj:
+            _, ax_obj = cls.get_figure_handle()
         xvals = df.index
         yvals = df['y']
         yerr = df['err']
-        ax.set_yscale(y_scale)  # plt.yscale(y_scale)
-        ax.errorbar(
+        ax_obj.set_yscale(y_scale)  # plt.yscale(y_scale)
+        ax_obj.errorbar(
             xvals, yvals,
             yerr=yerr,
             fmt=symbol,
@@ -50,21 +50,21 @@ class Figure:
         )
         if diagonal:
             cls.__plot_diagonal()
-        ax.set_xlabel(Config.plot_xlabel)
-        ax.set_ylabel(Config.plot_ylabel)
-        ax.set_title(title)
-        ax.set_xlim(Config.xlims['min'], Config.xlims['max'])
+        ax_obj.set_xlabel(Config.plot_xlabel)
+        ax_obj.set_ylabel(Config.plot_ylabel)
+        ax_obj.set_title(title)
+        ax_obj.set_xlim(Config.xlims['min'], Config.xlims['max'])
         if Config.ylims:
-            ax.set_ylim(Config.ylims['min'], Config.ylims['max'])
+            ax_obj.set_ylim(Config.ylims['min'], Config.ylims['max'])
         if y_scale == 'linear':
-            ax.set_ylim(Config.xlims['min'], Config.xlims['max'])
-        ax.set_box_aspect(1)
+            ax_obj.set_ylim(Config.xlims['min'], Config.xlims['max'])
+        ax_obj.set_box_aspect(1)
         if legend:
-            ax.legend(Config.legend, loc=Config.legend_loc)
+            ax_obj.legend(Config.legend, loc=Config.legend_loc)
         else:
-            ax.legend('', frameon=False)  # otherwise that leaves an ugly small gray frame in the upper right corner
+            ax_obj.legend('', frameon=False)  # otherwise that leaves an ugly small gray frame in the upper right corner
 
-        return ax
+        return ax_obj
 
     @classmethod
     def plot_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str, past: str, prior: str):
@@ -74,10 +74,10 @@ class Figure:
         ylabel = rf'after width - before width ($\mu$m)'
 
         # Create plot.
-        fig, ax = plt.subplots()
-        ax.stem(x, y)
-        ax.set_title(title)
-        ax.set(xlabel=xlabel, ylabel=ylabel)
+        fig, ax_obj = plt.subplots()
+        ax_obj.stem(x, y)
+        ax_obj.set_title(title)
+        ax_obj.set(xlabel=xlabel, ylabel=ylabel)
 
     @classmethod
     def plot_widths_fractional_differences(cls, x: numpy.ndarray, y: numpy.ndarray, yerr: numpy.ndarray, material: str, direction: str):
@@ -88,11 +88,11 @@ class Figure:
         color = 'gray'
 
         # Create plot.
-        fig, ax = plt.subplots()
+        fig, ax_obj = plt.subplots()
         plt.errorbar(x=x, y=y, yerr=yerr, color=color, fmt='o', capsize=8)
-        ax.set_title(title)
-        ax.set(xlabel=xlabel, ylabel=ylabel)
-        ax.set_ylim(-10 , 70)
+        ax_obj.set_title(title)
+        ax_obj.set(xlabel=xlabel, ylabel=ylabel)
+        ax_obj.set_ylim(-10 , 70)
         cls.__plot_zero_x_line()
 
     @classmethod
