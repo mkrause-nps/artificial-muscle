@@ -31,7 +31,6 @@ sm: sacrificial material (AKA wax)
 
 # Global variables:
 filename: str = ''
-#ax: matplotlib.axes = None
 
 
 class Type(Enum):
@@ -58,15 +57,15 @@ class Run:
     @classmethod
     def plot_channel_widths(cls, before_bake: str, after_bake: str, suffix: str) -> None:
         """Create scatter plots of set and measured width under two conditions."""
-        #Config.legend = ['sacrificial material', 'black resin (reference)']
         logger.info(f'Making plots of channel width before and after baking')
         logger.info(f'Parameters: {before_bake} and {after_bake}')
         Config.legend = ['before baking', 'after baking']
         Config.xlims = {'min': 0, 'max': 1600}
         Config.plot_xlabel = r'Set channel width ($\mu$m)'
         Config.plot_ylabel = r'Measured channel width ($\mu$m)'
-        ax: matplotlib.axes = Figure.plot_conductivity(excel_filename=filename, sheet_name=before_bake, symbol='-ob')
-        Figure.plot_conductivity(excel_filename=filename, sheet_name=after_bake, ax=ax,
+        ax_obj: matplotlib.axes = Figure.plot_conductivity(
+            excel_filename=filename, sheet_name=before_bake, symbol='-ob')
+        Figure.plot_conductivity(excel_filename=filename, sheet_name=after_bake, ax_obj=ax_obj,
                                  title=Config.plot_title, symbol='-or', legend=True, diagonal=True)
         Figure.save(excel_filename=filename, dest=Config.output_dir, suffix=Widths.specs[suffix]['suffix'])
 
@@ -80,24 +79,23 @@ class Run:
             y=experiment_specs.differences['width_diff'],
             material=experiment_specs.prior['material'],
             direction=experiment_specs.prior['print_direction'],
-            prior=experiment_specs.prior['status'],
-            past=experiment_specs.past['status']
         )
         Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=specs['suffix'])
 
-    @classmethod
-    def plot_widths_fractional_difference(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
-        """Plots the fraction of channel expansion, so (after - before) * 100 for each channel ID"""
-        # Note: this method is currently not used - potentially triage.
-        channel_width = ChannelWidth(dataframe=data_frame, prior=specs['before'], past=specs['after'])
-        channel_width.get_fractional_differences()
-        Figure.plot_widths_fractional_differences(
-            x=channel_width.differences['channel_id'].astype("string"),  # casting to string makes x-axis categorical
-            y=channel_width.differences['width_frac_diff'],
-            material=channel_width.prior['material'],
-            direction=channel_width.prior['print_direction']
-        )
-        Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=f"{specs['suffix']}_bar")
+    # @classmethod
+    # def plot_widths_fractional_difference(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
+    #     """Plots the fraction of channel expansion, so (after - before) * 100 for each channel ID"""
+    #     # Note: this method is currently not used - potentially triage.
+    #     channel_width = ChannelWidth(dataframe=data_frame, prior=specs['before'], past=specs['after'])
+    #     channel_width.get_fractional_differences()
+    #     Figure.plot_widths_fractional_differences(
+    #         x=channel_width.differences['channel_id'].astype("string"),  # casting to string makes x-axis categorical
+    #         y=channel_width.differences['width_frac_diff'],
+    #         yerr=channel_width.differences['width_err'],
+    #         material=channel_width.prior['material'],
+    #         direction=channel_width.prior['print_direction']
+    #     )
+    #     Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=f"{specs['suffix']}_bar")
 
     @classmethod
     def plot_widths_fractional_difference2(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
@@ -220,22 +218,22 @@ def main():
                 logging.error('Config.py_all is either empty or has whitespace - set to existing sheet name')
                 sys.exit()
 
-    elif args.type == Type.hp_prior:
-        Config.plot_title = 'Channels perpendicular to print direction - before baking'
-        config_channel_study()
-        Run.plot_channel_widths(before_bake='py_hp_sm_prior', after_bake='py_hp_br_prior')
-    elif args.type == Type.vp_prior:
-        config_channel_study()
-        Config.plot_title = 'Channels parallel to print direction - before baking'
-        Run.plot_channel_widths(before_bake='py_vp_sm_prior', after_bake='py_vp_br_prior')
-    elif args.type == Type.hp_past:
-        config_channel_study()
-        Config.plot_title = 'Channels perpendicular to print direction - after baking'
-        Run.plot_channel_widths(before_bake='py_hp_sm_past', after_bake='py_hp_br_past')
-    elif args.type == Type.vp_past:
-        config_channel_study()
-        Config.plot_title = 'Channels parallel to print direction - after baking'
-        Run.plot_channel_widths(before_bake='py_vp_sm_past', after_bake='py_vp_br_past')
+    # elif args.type == Type.hp_prior:
+    #     Config.plot_title = 'Channels perpendicular to print direction - before baking'
+    #     config_channel_study()
+    #     Run.plot_channel_widths(before_bake='py_hp_sm_prior', after_bake='py_hp_br_prior')
+    # elif args.type == Type.vp_prior:
+    #     config_channel_study()
+    #     Config.plot_title = 'Channels parallel to print direction - before baking'
+    #     Run.plot_channel_widths(before_bake='py_vp_sm_prior', after_bake='py_vp_br_prior')
+    # elif args.type == Type.hp_past:
+    #     config_channel_study()
+    #     Config.plot_title = 'Channels perpendicular to print direction - after baking'
+    #     Run.plot_channel_widths(before_bake='py_hp_sm_past', after_bake='py_hp_br_past')
+    # elif args.type == Type.vp_past:
+    #     config_channel_study()
+    #     Config.plot_title = 'Channels parallel to print direction - after baking'
+    #     Run.plot_channel_widths(before_bake='py_vp_sm_past', after_bake='py_vp_br_past')
 
     if is_file_save:
         Figure.save(excel_filename=args.filename, dest=Config.output_dir, suffix=str(args.type))

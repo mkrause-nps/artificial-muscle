@@ -31,11 +31,11 @@ class Figure:
 
     @classmethod
     def plot_conductivity(cls, excel_filename, sheet_name='Sheet1', symbol='-ob', y_scale='linear',
-                          ax_obj: matplotlib.axes= None, title=None, legend=False, diagonal=False) -> matplotlib.axes:
+                          ax_obj: matplotlib.axes = None, title=None, legend=False, diagonal=False) -> matplotlib.axes:
         """Creates scatter plot and returns its axes object"""
         df = pd.read_excel(excel_filename, sheet_name=sheet_name, index_col=1)
         pd.DataFrame.info(df)
-        #plt.gca()
+        # plt.gca()
         if not ax_obj:
             _, ax_obj = cls.get_figure_handle()
         xvals = df.index
@@ -80,7 +80,8 @@ class Figure:
         ax_obj.set(xlabel=xlabel, ylabel=ylabel)
 
     @classmethod
-    def plot_widths_fractional_differences(cls, x: numpy.ndarray, y: numpy.ndarray, yerr: numpy.ndarray, material: str, direction: str):
+    def plot_widths_fractional_differences(cls, x: numpy.ndarray, y: numpy.ndarray, yerr: numpy.ndarray, material: str,
+                                           direction: str):
         """Scatter plot with errors"""
         title = f"{material.replace('_', ' ')}, printed {direction}"
         xlabel = 'Channel ID'
@@ -92,12 +93,12 @@ class Figure:
         plt.errorbar(x=x, y=y, yerr=yerr, color=color, fmt='o', capsize=8)
         ax_obj.set_title(title)
         ax_obj.set(xlabel=xlabel, ylabel=ylabel)
-        ax_obj.set_ylim(-10 , 70)
+        ax_obj.set_ylim(-10, 70)
         cls.__plot_zero_x_line()
 
     @classmethod
     def plot_channel_widths_and_differences(cls, widths: pd.DataFrame, diffs: pd.DataFrame, material: str,
-                                            direction: str, unity_line: bool=False):
+                                            direction: str, unity_line: bool = False):
         """Scatter plot of width prior to and past baking and their differences in one graph"""
         title = f'Channel widths of {material.replace("_", " ")}, printed {direction}'
         xlabel = 'Set channel width ($\mu$m)'
