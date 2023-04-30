@@ -28,9 +28,9 @@ The Excel file needs to contain at least one _sheet_ with the following columns:
 | 5        | err           | float    | The error (e.g., standard error of the mean) for each Y-value |
 | 6        | n             | integer  | The number of samples of Y for a given X                      |
 
-Meta data for a given spreadsheet are specified in `config.py`. Change it according to your needs.
+Metadata for a given spreadsheet are specified in `config.py`. Change it according to your needs.
 
-The output is a semi-logarithmic plot of conductivity values, which is saved in PNG format to the same directory the spreadsheet was loaded from.
+The output is a semilogarithmic plot of conductivity values, which is saved in PNG format to the same directory the spreadsheet was loaded from.
 
 ## Channel Width Study
 The channel width study compares how different orientations of printing the channels affects channel widths. Specifically,
@@ -72,7 +72,7 @@ In the root directory execute
 
 `python -m artificial-muscle <path-to-Excel-datafile> <Type Parameter>`
 
-Files containing the plots are written to the same directory where the Excel datafile resides.
+Files containing the plots are written to the same directory where the Excel datafile resides. The path-to-Excel-datafile can be relative because the absolute path is a parameter in `config.py`.
 
 ## Clearance Study
 
