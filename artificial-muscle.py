@@ -4,6 +4,7 @@ import os
 import sys
 import logging
 import argparse
+import matplotlib.axes
 from enum import Enum
 
 import pandas as pd
@@ -13,7 +14,6 @@ from src.figure import Figure
 from src.channel_width import ChannelWidth
 from src.widths import Widths
 
-#logging.basicConfig(level=logging.INFO)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -29,8 +29,9 @@ sm: sacrificial material (AKA wax)
 
 """
 
-global filename
-global ax
+# Global variables:
+filename: str = ''
+#ax: matplotlib.axes = None
 
 
 class Type(Enum):
@@ -55,18 +56,19 @@ class Run:
     """Runners for each user selected option"""
 
     @classmethod
-    def plot_channel_widths(cls, before_bake: str, after_bake: str) -> None:
+    def plot_channel_widths(cls, before_bake: str, after_bake: str, suffix: str) -> None:
         """Create scatter plots of set and measured width under two conditions."""
         #Config.legend = ['sacrificial material', 'black resin (reference)']
         logger.info(f'Making plots of channel width before and after baking')
         logger.info(f'Parameters: {before_bake} and {after_bake}')
         Config.legend = ['before baking', 'after baking']
         Config.xlims = {'min': 0, 'max': 1600}
-        Config.plot_xlabel = r'set channel width ($\mu$m)'
-        Config.plot_ylabel = r'measured channel width ($\mu$m)'
-        Figure.plot_conductivity(excel_filename=filename, ax=ax, sheet_name=before_bake, symbol='-ob')
-        Figure.plot_conductivity(excel_filename=filename, ax=ax, sheet_name=after_bake,
+        Config.plot_xlabel = r'Set channel width ($\mu$m)'
+        Config.plot_ylabel = r'Measured channel width ($\mu$m)'
+        ax: matplotlib.axes = Figure.plot_conductivity(excel_filename=filename, sheet_name=before_bake, symbol='-ob')
+        Figure.plot_conductivity(excel_filename=filename, sheet_name=after_bake, ax=ax,
                                  title=Config.plot_title, symbol='-or', legend=True, diagonal=True)
+        Figure.save(excel_filename=filename, dest=Config.output_dir, suffix=Widths.specs[suffix]['suffix'])
 
     @classmethod
     def plot_widths_difference(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
@@ -144,6 +146,9 @@ def config_channel_study2() -> None:
 
 def main():
 
+    # Set globals:
+    global filename
+
     is_file_save: bool = True
 
     parser = argparse.ArgumentParser(description="Artificial Muscle Project")
@@ -152,19 +157,18 @@ def main():
     # parser.add_argument('suffix', type=str, help='Specifies output filename')
     args = parser.parse_args()
 
-    filename: str = os.path.join(Config.output_dir, args.filename)
+    filename = os.path.join(Config.output_dir, args.filename)  # that's global!
 
     logging.info(f'file name: {filename}')
     logging.info(f'data type to process: {args.type}')
 
-    _, ax = Figure.get_figure_handle()
     if args.type == Type.conductivity:
         Config.plot_title = 'Conductivity of carbon mesoporous in TangoPlus'
         # Config.plot_title = 'Conductivity of carbon nanofibers in TangoPlus'
         Config.plot_xlabel = 'fraction CMPs added (weight %)'
         # Config.legend = ['sacrificial material', 'black resin (reference)']
-        Figure.plot_conductivity(excel_filename=filename, ax=ax,
-                                 sheet_name='Sheet1', title=Config.plot_title, symbol='-ob', plot_type='log')
+        Figure.plot_conductivity(excel_filename=filename, sheet_name='Sheet1', title=Config.plot_title,
+                                 symbol='-ob', y_scale='log')
         # Figure.plot(excel_filename=filename, ax=ax, sheet_name='Sheet2', symbol='-or', plot_type='log', legend=True)
     elif args.type == Type.width:
         is_file_save = False  # with this switch figures are saved with each iteration of for loop
@@ -183,20 +187,23 @@ def main():
     elif args.type == Type.hp_sm:
         Config.plot_title = 'Sacrificial material, perpendicular to print direction'
         config_channel_study2()
-        Run.plot_channel_widths(before_bake='py_hp_sm_prior', after_bake='py_hp_sm_past')
+        Run.plot_channel_widths(before_bake='py_hp_sm_prior', after_bake='py_hp_sm_past', suffix='perp_sm')
+        is_file_save = False
     elif args.type == Type.vp_sm:
         Config.plot_title = 'Sacrificial material, parallel to print direction'
         config_channel_study2()
-        Run.plot_channel_widths(before_bake='py_vp_sm_prior', after_bake='py_vp_sm_past')
-
+        Run.plot_channel_widths(before_bake='py_vp_sm_prior', after_bake='py_vp_sm_past', suffix='para_sm')
+        is_file_save = False
     elif args.type == Type.hp_br:
         Config.plot_title = 'Black resin, perpendicular to print direction'
         config_channel_study2()
-        Run.plot_channel_widths(before_bake='py_hp_br_prior', after_bake='py_hp_br_past')
+        Run.plot_channel_widths(before_bake='py_hp_br_prior', after_bake='py_hp_br_past', suffix='perp_br')
+        is_file_save = False
     elif args.type == Type.vp_br:
         Config.plot_title = 'Black resin, parallel to print direction'
         config_channel_study2()
-        Run.plot_channel_widths(before_bake='py_vp_br_prior', after_bake='py_vp_br_past')
+        Run.plot_channel_widths(before_bake='py_vp_br_prior', after_bake='py_vp_br_past', suffix='para_br')
+        is_file_save = False
 
     elif args.type == Type.width_diff:
         is_file_save = False  # with this switch figures are saved with each iteration of for loop

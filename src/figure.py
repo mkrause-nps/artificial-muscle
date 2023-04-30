@@ -4,14 +4,18 @@ import os
 import logging
 import numpy
 import pandas as pd
+import matplotlib.axes
 import matplotlib.pyplot as plt
 from src.config import Config
+
+ax: matplotlib.axes = None
 
 
 class Figure:
 
     @classmethod
     def get_figure_handle(cls) -> tuple:
+        global ax
         fig, ax = plt.subplots()
         ax.set_xlim(Config.xlims['min'], Config.xlims['max'])
         ax.set_box_aspect(1)
@@ -26,37 +30,41 @@ class Figure:
         return pd.read_excel(excel_filename, sheet_name=Config.py_all)
 
     @classmethod
-    def plot_conductivity(cls, excel_filename, ax, sheet_name='Sheet1', symbol='-ob', plot_type='linear', title=None,
-                          legend=False, diagonal=False) -> None:
-        """Scatter plot"""
+    def plot_conductivity(cls, excel_filename, sheet_name='Sheet1', symbol='-ob', y_scale='linear',
+                          ax: matplotlib.axes= None, title=None, legend=False, diagonal=False) -> matplotlib.axes:
+        """Creates scatter plot and returns its axes object"""
         df = pd.read_excel(excel_filename, sheet_name=sheet_name, index_col=1)
         pd.DataFrame.info(df)
-        plt.gca()
-        if diagonal:
-            cls.__plot_diagonal()
+        #plt.gca()
+        if not ax:
+            _, ax = cls.get_figure_handle()
         xvals = df.index
         yvals = df['y']
         yerr = df['err']
-        plt.yscale(plot_type)
-        plt.errorbar(
+        ax.set_yscale(y_scale)  # plt.yscale(y_scale)
+        ax.errorbar(
             xvals, yvals,
             yerr=yerr,
             fmt=symbol,
             capsize=4
         )
-        plt.xlabel(Config.plot_xlabel)
-        plt.ylabel(Config.plot_ylabel)
-        plt.title(title)
+        if diagonal:
+            cls.__plot_diagonal()
+        ax.set_xlabel(Config.plot_xlabel)
+        ax.set_ylabel(Config.plot_ylabel)
+        ax.set_title(title)
         ax.set_xlim(Config.xlims['min'], Config.xlims['max'])
         if Config.ylims:
             ax.set_ylim(Config.ylims['min'], Config.ylims['max'])
-        if plot_type == 'linear':
+        if y_scale == 'linear':
             ax.set_ylim(Config.xlims['min'], Config.xlims['max'])
         ax.set_box_aspect(1)
         if legend:
             ax.legend(Config.legend, loc=Config.legend_loc)
         else:
             ax.legend('', frameon=False)  # otherwise that leaves an ugly small gray frame in the upper right corner
+
+        return ax
 
     @classmethod
     def plot_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str, past: str, prior: str):
@@ -134,8 +142,13 @@ class Figure:
 
     @classmethod
     def save(cls, excel_filename: str, dest: str, suffix: str) -> None:
-        """Write file with plot to disk"""
-        figure_filename = cls.__get_filename(excel_filename) + '_' + suffix + '.png'
+        """Write file with plot to disk in PNG and SVG format"""
+        cls.__save_figure_as(filename=excel_filename, dest=dest, suffix=suffix, _format='.png')
+        cls.__save_figure_as(filename=excel_filename, dest=dest, suffix=suffix, _format='.svg')
+
+    @classmethod
+    def __save_figure_as(cls, filename: str, dest: str, suffix: str, _format: str) -> None:
+        figure_filename = cls.__get_filename(filename) + '_' + suffix + _format
         dest = os.path.join(dest, figure_filename)
         plt.savefig(dest)
         if os.path.exists(f'{dest}'):

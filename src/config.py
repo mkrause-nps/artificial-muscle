@@ -27,7 +27,7 @@ legend_loc: str
 
 class Config:
     #output_dir: str = 'C:\\Users\\mkrause.RIZIA-PC\\OneDrive - Naval Postgraduate School\\artificial_muscle\\data'
-    output_dir: str = '/home/mkrause/data/width/'
+    output_dir: str = '/home/mkrause/data/artificial-muscle/input_data/'
     #output_dir: str = '/home/mkrause/data/conductivity/'
     suffix: str = None,
     plot_title: str = None,
