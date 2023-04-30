@@ -67,7 +67,7 @@ class Figure:
         return ax_obj
 
     @classmethod
-    def plot_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str, past: str, prior: str):
+    def plot_differences(cls, x: numpy.ndarray, y: numpy.ndarray, material: str, direction: str):
         """Stem plot"""
         title = f'Channel widths of {material}, printed {direction}'
         xlabel = 'channel ID'
