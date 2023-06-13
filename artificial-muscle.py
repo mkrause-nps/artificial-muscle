@@ -17,7 +17,6 @@ from src.widths import Widths
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
 logger = logging.getLogger(__name__)
 
-
 """
 ABBREVIATIONS
 
@@ -46,6 +45,7 @@ class Type(Enum):
     hp_past = 'hp_past'
     vp_past = 'vp_past'
     width_diff = 'width_diff'
+    width_rel_err = 'width_rel_err'
 
     def __str__(self):
         return self.value
@@ -82,20 +82,6 @@ class Run:
         )
         Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=specs['suffix'])
 
-    # @classmethod
-    # def plot_widths_fractional_difference(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
-    #     """Plots the fraction of channel expansion, so (after - before) * 100 for each channel ID"""
-    #     # Note: this method is currently not used - potentially triage.
-    #     channel_width = ChannelWidth(dataframe=data_frame, prior=specs['before'], past=specs['after'])
-    #     channel_width.get_fractional_differences()
-    #     Figure.plot_widths_fractional_differences(
-    #         x=channel_width.differences['channel_id'].astype("string"),  # casting to string makes x-axis categorical
-    #         y=channel_width.differences['width_frac_diff'],
-    #         yerr=channel_width.differences['width_err'],
-    #         material=channel_width.prior['material'],
-    #         direction=channel_width.prior['print_direction']
-    #     )
-    #     Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=f"{specs['suffix']}_bar")
 
     @classmethod
     def plot_widths_fractional_difference2(cls, excel_filename: str, data_frame: pd.DataFrame, specs: dict):
@@ -126,6 +112,15 @@ class Run:
 
         Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=specs_['suffix'])
 
+    @classmethod
+    def plot_width_relative_error(cls, excel_filename: str, data_frame_: pd.DataFrame, specs_: dict) -> None:
+        """Plot the relative error for each set channel width"""
+        channel_width = ChannelWidth(dataframe=data_frame_, prior=specs_['before'], past=specs_['after'])
+        channel_width.get_widths()
+        channel_width.get_relative_error()
+        Figure.plot_relative_error()
+        pass
+
 
 def config_channel_study() -> None:
     Config.legend = ['sacrificial material', 'black resin (reference)']
@@ -142,8 +137,15 @@ def config_channel_study2() -> None:
     Config.plot_ylabel = r'measured channel width ($\mu$m)'
 
 
-def main():
+def config_width_rel_err() -> None:
+    Config.legend = ['before baking', 'after baking']
+    Config.xlims = {'min': 0, 'max': 1100}
+    Config.ylims = {'min': 0, 'max': 300}
+    Config.plot_xlabel = r'Set channel width ($\mu$m)'
+    Config.plot_ylabel = 'Relative error of measured width (%)'
 
+
+def main():
     # Set globals:
     global filename
 
@@ -218,22 +220,20 @@ def main():
                 logging.error('Config.py_all is either empty or has whitespace - set to existing sheet name')
                 sys.exit()
 
-    # elif args.type == Type.hp_prior:
-    #     Config.plot_title = 'Channels perpendicular to print direction - before baking'
-    #     config_channel_study()
-    #     Run.plot_channel_widths(before_bake='py_hp_sm_prior', after_bake='py_hp_br_prior')
-    # elif args.type == Type.vp_prior:
-    #     config_channel_study()
-    #     Config.plot_title = 'Channels parallel to print direction - before baking'
-    #     Run.plot_channel_widths(before_bake='py_vp_sm_prior', after_bake='py_vp_br_prior')
-    # elif args.type == Type.hp_past:
-    #     config_channel_study()
-    #     Config.plot_title = 'Channels perpendicular to print direction - after baking'
-    #     Run.plot_channel_widths(before_bake='py_hp_sm_past', after_bake='py_hp_br_past')
-    # elif args.type == Type.vp_past:
-    #     config_channel_study()
-    #     Config.plot_title = 'Channels parallel to print direction - after baking'
-    #     Run.plot_channel_widths(before_bake='py_vp_sm_past', after_bake='py_vp_br_past')
+    elif args.type == Type.width_rel_err:
+        is_file_save = False
+        config_width_rel_err()
+        df = Figure.get_dataframe(excel_filename=filename)
+        for key in Widths.specs:
+            try:
+                Run.plot_width_relative_error(
+                    excel_filename=filename,
+                    data_frame_=df,
+                    specs_=Widths.specs[key]
+                )
+            except ValueError:
+                logging.error('Config.py_all is either empty or has whitespace - set to existing sheet name')
+                sys.exit()
 
     if is_file_save:
         Figure.save(excel_filename=args.filename, dest=Config.output_dir, suffix=str(args.type))

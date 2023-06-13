@@ -22,6 +22,7 @@ class Figure:
 
     @classmethod
     def get_dataframe(cls, excel_filename) -> pd.DataFrame:
+        """Load data in tab 'py_all' into Pandas DF, from the main Excel spreadsheet file."""
         if Config.py_all == '' or Config.py_all.isspace():
             raise ValueError()
 
@@ -76,6 +77,13 @@ class Figure:
         ax_obj.stem(x, y)
         ax_obj.set_title(title)
         ax_obj.set(xlabel=xlabel, ylabel=ylabel)
+
+    @classmethod
+    def plot_relative_error(cls, widths: pd.DataFrame, diffs: pd.DataFrame, material: str, direction: str) -> None:
+        title = f'{material}, print orientation {direction}'
+        xlabel = 'Set width ($\mu m$)'
+        ylabel = 'Relative error of measured width (%)'
+        pass
 
     @classmethod
     def plot_widths_fractional_differences(cls, x: numpy.ndarray, y: numpy.ndarray, yerr: numpy.ndarray, material: str,

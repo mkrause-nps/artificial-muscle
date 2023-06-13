@@ -13,6 +13,11 @@ class ChannelWidth:
         self.past: dict = past
         self.differences: pd.DataFrame = pd.DataFrame()
         self.widths: pd.DataFrame = pd.DataFrame()
+        self.relative_error: pd.DataFrame = pd.DataFrame()
+
+    def get_relative_error(self) -> None:
+        """Get the relative error for each set width and its standard deviation"""
+        print("a beautiful day")
 
     def get_widths(self) -> None:
         """Get widths and the error (standard deviation)"""
