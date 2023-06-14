@@ -116,9 +116,14 @@ class Run:
     def plot_width_relative_error(cls, excel_filename: str, data_frame_: pd.DataFrame, specs_: dict) -> None:
         """Plot the relative error for each set channel width"""
         channel_width = ChannelWidth(dataframe=data_frame_, prior=specs_['before'], past=specs_['after'])
-        channel_width.get_widths()
         channel_width.get_relative_error()
-        Figure.plot_relative_error()
+        Figure.plot_relative_error(
+            rel_err=channel_width.relative_error,
+            material=channel_width.prior['material'],
+            direction=channel_width.prior['print_direction']
+        )
+
+        Figure.save(excel_filename=excel_filename, dest=Config.output_dir, suffix=specs_['suffix'])
         pass
 
 

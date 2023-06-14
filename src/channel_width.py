@@ -17,7 +17,16 @@ class ChannelWidth:
 
     def get_relative_error(self) -> None:
         """Get the relative error for each set width and its standard deviation"""
-        print("a beautiful day")
+        df = self.__get_rel_err(time_measured=self.prior)
+        # Add the relative error for each value to dataframe.
+        df['rel_err'] = (df['widths_um'] - df['channel_id']) / df['channel_id'] * 100
+        data = {
+            'channel_id': self.__get_id_column(),
+            'rel_err_means': self.__get_mean(df=df, key_to_group_by='channel_id', col_to_get_mean='rel_err'),
+            'rel_err_stdevs': self.__get_stdev(df=df, key_to_group_by='channel_id', col_to_get_mean='rel_err')
+        }
+        self.relative_error = pd.DataFrame(data=data, columns=list(data.keys()))
+        self.relative_error.reset_index(drop=True, inplace=True)
 
     def get_widths(self) -> None:
         """Get widths and the error (standard deviation)"""
@@ -123,3 +132,7 @@ class ChannelWidth:
     def __get_id_column(self) -> numpy.ndarray:
         """Add the channel ID as a column, assign unique names to columns and combine data from two DFs into one."""
         return self.df['channel_id'].unique()  # get a set of IDs
+
+    def __get_rel_err(self, time_measured:dict):
+        df = self.__get_data(time_measured=time_measured)
+        return df

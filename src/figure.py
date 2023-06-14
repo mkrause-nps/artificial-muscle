@@ -79,11 +79,15 @@ class Figure:
         ax_obj.set(xlabel=xlabel, ylabel=ylabel)
 
     @classmethod
-    def plot_relative_error(cls, widths: pd.DataFrame, diffs: pd.DataFrame, material: str, direction: str) -> None:
+    def plot_relative_error(cls, rel_err: pd.DataFrame, material: str, direction: str) -> None:
         title = f'{material}, print orientation {direction}'
         xlabel = 'Set width ($\mu m$)'
         ylabel = 'Relative error of measured width (%)'
-        pass
+        # Create plot.
+        fig, ax_obj = plt.subplots()
+        plt.errorbar(x=rel_err['channel_id'], y=rel_err['rel_err_means'], yerr=rel_err['rel_err_stdevs']) #, color=color, fmt='o', capsize=8)
+        ax_obj.set_title(title)
+        ax_obj.set(xlabel=xlabel, ylabel=ylabel)
 
     @classmethod
     def plot_widths_fractional_differences(cls, x: numpy.ndarray, y: numpy.ndarray, yerr: numpy.ndarray, material: str,
