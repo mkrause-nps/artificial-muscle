@@ -27,7 +27,7 @@ legend_loc: str
 
 class Config:
     # output_dir: str = 'C:\\Users\\mkrause.RIZIA-PC\\OneDrive - Naval Postgraduate School\\artificial_muscle\\data'
-    output_dir: str = '/home/mkrause/data/artificial-muscle/junk/'
+    output_dir: str = '/home/mkrause/data/artificial-muscle/channel_width_relative_err/'
     # output_dir: str = '/home/mkrause/data/conductivity/'
     suffix: str = None,
     plot_title: str = None,

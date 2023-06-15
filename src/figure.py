@@ -89,7 +89,7 @@ class Figure:
                      fmt='ob', capsize=8)
         plt.errorbar(x=rel_err['channel_id'], y=rel_err['rel_err_past_means'], yerr=rel_err['rel_err_past_stdevs'],
                      fmt='or', capsize=8)
-        ax_obj.set_title(title)
+        #ax_obj.set_title(title)
         ax_obj.set(xlabel=xlabel, ylabel=ylabel)
         ax_obj.set_ylim(0, 400)
         ax_obj.legend(Config.legend, loc='upper right')
