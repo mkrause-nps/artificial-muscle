@@ -17,13 +17,21 @@ class ChannelWidth:
 
     def get_relative_error(self) -> None:
         """Get the relative error for each set width and its standard deviation"""
-        df = self.__get_rel_err(time_measured=self.prior)
-        # Add the relative error for each value to dataframe.
-        df['rel_err'] = (df['widths_um'] - df['channel_id']) / df['channel_id'] * 100
+        # Filter for bake-status and add the relative error for each value to dataframe.
+        df_prior = self.__get_rel_err(time_measured=self.prior)
+        df_prior['rel_err'] = (df_prior['widths_um'] - df_prior['channel_id']) / df_prior['channel_id'] * 100
+        df_past = self.__get_rel_err(time_measured=self.past)
+        df_past['rel_err'] = (df_past['widths_um'] - df_past['channel_id']) / df_past['channel_id'] * 100
+        # Compose data for new dataframe.
         data = {
             'channel_id': self.__get_id_column(),
-            'rel_err_means': self.__get_mean(df=df, key_to_group_by='channel_id', col_to_get_mean='rel_err'),
-            'rel_err_stdevs': self.__get_stdev(df=df, key_to_group_by='channel_id', col_to_get_mean='rel_err')
+            'rel_err_prior_means': self.__get_mean(df=df_prior, key_to_group_by='channel_id',
+                                                   col_to_get_mean='rel_err'),
+            'rel_err_prior_stdevs': self.__get_stdev(df=df_prior, key_to_group_by='channel_id',
+                                                     col_to_get_mean='rel_err'),
+            'rel_err_past_means': self.__get_mean(df=df_past, key_to_group_by='channel_id', col_to_get_mean='rel_err'),
+            'rel_err_past_stdevs': self.__get_stdev(df=df_past, key_to_group_by='channel_id',
+                                                    col_to_get_mean='rel_err')
         }
         self.relative_error = pd.DataFrame(data=data, columns=list(data.keys()))
         self.relative_error.reset_index(drop=True, inplace=True)
@@ -86,7 +94,7 @@ class ChannelWidth:
         after_err = self.__get_stdevs(time_measured=self.past)
         before_err = self.__get_stdevs(time_measured=self.prior)
 
-        propagated_err = ((after_err / before**2) + (before_err * after**2 / before**4)) * 100
+        propagated_err = ((after_err / before ** 2) + (before_err * after ** 2 / before ** 4)) * 100
 
         return propagated_err
 
@@ -133,6 +141,6 @@ class ChannelWidth:
         """Add the channel ID as a column, assign unique names to columns and combine data from two DFs into one."""
         return self.df['channel_id'].unique()  # get a set of IDs
 
-    def __get_rel_err(self, time_measured:dict):
+    def __get_rel_err(self, time_measured: dict):
         df = self.__get_data(time_measured=time_measured)
         return df

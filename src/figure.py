@@ -85,9 +85,16 @@ class Figure:
         ylabel = 'Relative error of measured width (%)'
         # Create plot.
         fig, ax_obj = plt.subplots()
-        plt.errorbar(x=rel_err['channel_id'], y=rel_err['rel_err_means'], yerr=rel_err['rel_err_stdevs']) #, color=color, fmt='o', capsize=8)
+        plt.errorbar(x=rel_err['channel_id'], y=rel_err['rel_err_prior_means'], yerr=rel_err['rel_err_prior_stdevs'],
+                     fmt='ob', capsize=8)
+        plt.errorbar(x=rel_err['channel_id'], y=rel_err['rel_err_past_means'], yerr=rel_err['rel_err_past_stdevs'],
+                     fmt='or', capsize=8)
         ax_obj.set_title(title)
         ax_obj.set(xlabel=xlabel, ylabel=ylabel)
+        ax_obj.set_ylim(0, 400)
+        ax_obj.legend(Config.legend, loc='upper right')
+        ax_obj.set_box_aspect(1)
+
 
     @classmethod
     def plot_widths_fractional_differences(cls, x: numpy.ndarray, y: numpy.ndarray, yerr: numpy.ndarray, material: str,
