@@ -2,7 +2,16 @@
 
 from abc import ABC, abstractmethod
 
-class ChannelDataBaseInterface(ABC):
+
+class ChannelDataInterface(ABC):
+
+    # @abstractmethod
+    # def __put_data(self, resistance: float, stddev: float):
+    #     pass
+    #
+    # @abstractmethod
+    # def put_data(self, data: list):
+    #     pass
 
     @abstractmethod
     def get_data(self):
@@ -14,8 +23,4 @@ class ChannelDataBaseInterface(ABC):
 
     @abstractmethod
     def get_stddev(self):
-        pass
-
-    @abstractmethod
-    def __get_data_filename(self, data_path: str):
         pass
