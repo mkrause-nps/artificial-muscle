@@ -13,11 +13,11 @@ class Loader:
         data_path -- the absolute path to an Excel spreadsheet
         sheet_name -- the name of the sheet in that spreadsheet file
         """
-        data_filename: str = cls.__get_data_filename(data_path=data_path)
-        if data_filename is None:
-            return None
+        # data_filename: str = cls.__get_data_filename(data_path=data_path)
+        # if data_filename is None:
+        #     return None
 
-        df = pd.read_excel(data_filename, sheet_name=sheet_name)
+        df = pd.read_excel(data_path, sheet_name=sheet_name)
         df.dropna(axis='rows', how='all', inplace=True)  # remove all rows where all values are NaN's
         df.fillna(method='ffill', inplace=True)          # repeat the last value (from top) if followed by a NaN
         df.dropna(axis='columns', inplace=True)          # drop columns that have at least one NaN

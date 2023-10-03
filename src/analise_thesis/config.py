@@ -10,6 +10,9 @@ class ChipType(Enum):
 
 class Config:
     """Configuration parameters specific to the system where data are processed and analyzed."""
+    COLUMN_NAME_CHIP = 'Chip Name'
+    COLUMN_NAME_AVG_RESISTANCE = 'Resistance (kΩ)'
+    COLUMN_NAME_STDEV_RESISTANCE = 'Standard Deviation (kΩ)'
 
     SI_UNIT = 'k$\\Omega$'
     excel_spreadsheet_path: str = '/home/mkrause/data/artificial-muscle/analise_thesis'
