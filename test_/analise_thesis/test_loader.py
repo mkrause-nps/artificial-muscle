@@ -26,10 +26,7 @@ class TestLoader(SetUp):
         self.assertEqual(df, None)
 
     def test_read_data(self) -> None:
-        df = Loader.read_data(self.test_data_path, sheet_name=self.test_data_sheet1_name)
+        data_path = os.path.join(self.test_data_path, self.test_data_filename)
+        df = Loader.read_data(data_path=data_path, sheet_name=self.test_data_sheet1_name)
         print(df)
         pd.testing.assert_frame_equal(self.df2, df)
-
-
-# if __name__ == '__main__':
-#     unittest.main()

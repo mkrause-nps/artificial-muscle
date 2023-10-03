@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import os.path
 
+import os
 import pandas as pd
 from src.analise_thesis.loader import Loader
 from src.analise_thesis.config import Config
@@ -21,17 +21,14 @@ class ChannelData(ChannelDataInterface):
         df: pd.DataFrame = Loader.read_data(data_path=data_filename, sheet_name=sheet_name)
         injection_number = 1
         column_value = self.__compose_chip_name(injection_number=injection_number)
-        #print(df.loc[df[self.COLUMN_NAME] == column_value])
+
         return df.loc[df[Config.COLUMN_NAME_CHIP] == column_value]
 
-    def get_mean(self):
+    def get_mean(self) -> float:
         return self.df[Config.COLUMN_NAME_AVG_RESISTANCE].mean()
 
-    def get_stddev(self):
+    def get_stddev(self) -> float:
         return self.df[Config.COLUMN_NAME_AVG_RESISTANCE].std()
-
-    def get_data(self):
-        pass
 
     @staticmethod
     def __get_data_filename():

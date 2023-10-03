@@ -10,7 +10,7 @@ class SetUp(unittest.TestCase):
         self.test_data_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_data')
         self.test_data_filename: str = 'test_data.xlsx'
         self.test_data_sheet1_name: str = 'Foo Bar Data1'
-        self.test_data_filename_not_exists: str = 'foo.xlsx'
+        self.test_data_filename_not_exists: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'foo.xlsx')
         self.test_json_filename: str = 'exported_dataframe.json'
         self.json_filename: str = os.path.join(self.test_data_path, self.test_json_filename)
         data = {'Product': ['Computer', 'Printer', 'Monitor', 'Tablet', 'Keyboard'],

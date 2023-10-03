@@ -4,17 +4,8 @@ from abc import ABC, abstractmethod
 
 
 class ChannelDataInterface(ABC):
-
-    # @abstractmethod
-    # def __put_data(self, resistance: float, stddev: float):
-    #     pass
-    #
-    # @abstractmethod
-    # def put_data(self, data: list):
-    #     pass
-
     @abstractmethod
-    def get_data(self):
+    def put_data(self, data_filename: str, sheet_name: str):
         pass
 
     @abstractmethod

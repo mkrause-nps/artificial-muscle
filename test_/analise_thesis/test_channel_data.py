@@ -10,10 +10,14 @@ from unittest.mock import patch, PropertyMock
 @patch('src.analise_thesis.channel_data.ChannelData._ChannelData__get_sheetname')
 @patch('src.analise_thesis.config.Config.excel_spreadsheet_path', new_callable=PropertyMock)
 class TestChannelData(SetUp):
-    def test_put_data(self, mock_path, mock_get_sheetname, mock_spreadsheet_name):
+    def test_constructor(self, mock_path, mock_get_sheetname, mock_spreadsheet_name):
         mock_path.return_value = self.test_data_path
         mock_get_sheetname.return_value = 'Foo Bar Data1'
         channel_data = ChannelData(chip_type='hard', channel_width=896)
+        expected_number_of_rows = 3
+        self.assertEqual(len(channel_data.df.index), expected_number_of_rows)
+        expected_number_of_columns = 3
+        self.assertEqual(len(channel_data.df), expected_number_of_columns)
 
     def test_get_average(self, mock_path, mock_get_sheetname, mock_spreadsheet_name) -> None:
         mock_path.return_value = self.test_data_path
