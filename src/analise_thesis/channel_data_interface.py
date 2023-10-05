@@ -5,13 +5,17 @@ from abc import ABC, abstractmethod
 
 class ChannelDataInterface(ABC):
     @abstractmethod
-    def put_data(self, data_filename: str, sheet_name: str):
+    def put_data(self) -> None:
         pass
 
     @abstractmethod
-    def get_mean(self):
+    def get_data(self) -> tuple[list, list, list] | str:
         pass
 
     @abstractmethod
-    def get_stddev(self):
+    def get_mean(self) -> float:
+        pass
+
+    @abstractmethod
+    def get_stddev(self) -> float:
         pass
