@@ -13,7 +13,7 @@ class TestChannelData(SetUp):
     def test_constructor(self, mock_path, mock_get_sheetname, mock_spreadsheet_name):
         mock_path.return_value = self.test_data_path
         mock_get_sheetname.return_value = 'Foo Bar Data1'
-        channel_data = ChannelData(chip_type='hard', channel_width=896)
+        channel_data = ChannelData(chip_type='hard', chip_id=1, channel_width=896)
         expected_number_of_rows = 3
         self.assertEqual(len(channel_data.df.index), expected_number_of_rows)
         expected_number_of_columns = 3
@@ -22,7 +22,7 @@ class TestChannelData(SetUp):
     def test_get_average(self, mock_path, mock_get_sheetname, mock_spreadsheet_name) -> None:
         mock_path.return_value = self.test_data_path
         mock_get_sheetname.return_value = 'Foo Bar Data1'
-        channel_data = ChannelData(chip_type='hard', channel_width=896)
+        channel_data = ChannelData(chip_type='hard', chip_id=1, channel_width=896)
 
         expected_avg = 54.50066666666667
         observed_avg = channel_data.get_mean()
@@ -31,7 +31,7 @@ class TestChannelData(SetUp):
     def test_get_stddev(self, mock_path, mock_get_sheetname, mock_spreadsheet_name) -> None:
         mock_path.return_value = self.test_data_path
         mock_get_sheetname.return_value = 'Foo Bar Data1'
-        channel_data = ChannelData(chip_type='hard', channel_width=896)
+        channel_data = ChannelData(chip_type='hard', chip_id=1, channel_width=896)
 
         expected_std = 72.77112835000797
         observed_std = channel_data.get_stddev()
