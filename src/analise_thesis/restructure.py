@@ -5,42 +5,55 @@ class Restructure:
     idx_ydata: int = 0
     idx_err: int = 1
     minimum_number_elements: int = 0
+    maximum_number_elements: int = 0
 
     @classmethod
-    def restructure(cls, tup: tuple, idx: int) -> tuple[list, list]:
-        """Return a tuple of lists
+    def restructure(cls, tups: tuple) -> list:
+        """Return a list of lists, where data are restructured to match the input for WeightedAverage.get.
 
-        @param tup: Tuple of tuples, each of which contains two lists. The first of those lists contains
-                    y-data, and the second corresponding y-errors. Both lists have the same length.
-        such that the
-        @param idx: The index of the list
-        @return: A tuple of two lists. The first list contains all the idx-th element of the y-data, the second
-                    list contains all the idx-th element of the y-errors.
+        @param tups:    Tuple of tuples. Each innter tuple contains two lists. The first of those lists contains
+                        y-data, and the second corresponding y-errors. Both lists have the same length.
+        @return:        A list of lists. Each inner list corresponds to one x-value. The inner list contains
+                        2-tuples representing replications of an experiment where the first element of each
+                        2-tuple corresponds to the y-data value and the second to the y-error
         """
 
-        tup = cls.__triage_if_idx_out_of_range(tup=tup, idx=idx)
+        cls.__get_maximum_number_elements(tups=tups)
+        x_idx_list = cls.__get_x_idx()
+        restructured_data = []
+        for x_idx in x_idx_list:
+            groomed_tups = cls.__triage_if_idx_out_of_range(tups=tups, idx=x_idx)
+            restructured_data.append(
+                list(map(lambda x: (x[cls.idx_ydata][x_idx], x[cls.idx_err][x_idx]), groomed_tups))
+            )
 
-        return (
-            list(map(lambda x: x[cls.idx_ydata][idx], tup)),
-            list(map(lambda x: x[cls.idx_err][idx], tup))
-        )
+        return restructured_data
 
     @classmethod
-    def __triage_if_idx_out_of_range(cls, tup: tuple, idx: int):
+    def __triage_if_idx_out_of_range(cls, tups: tuple, idx: int) -> tuple:
+        """Removes lists from tups that a shorted than length idx and returns tuple"""
         groomed_data = []
-        for tupl in tup:
+        for tup in tups:
             try:
-                tupl[cls.idx_ydata][idx]
+                tup[cls.idx_ydata][idx]
             except IndexError:
                 print('skipping...')
                 continue
-            groomed_data.append((tupl[cls.idx_ydata], tupl[cls.idx_err]))
+            groomed_data.append((tup[cls.idx_ydata], tup[cls.idx_err]))
 
         return tuple(groomed_data)
 
     @classmethod
-    def __get_minimum_number_elements(cls, tup: tuple) -> None:
-        cls.minimum_number_elements = min([len(tup[idx][0]) for idx in range(len(tup))])
+    def __get_minimum_number_elements(cls, tups: tuple) -> None:
+        cls.minimum_number_elements = min([len(tups[idx][0]) for idx in range(len(tups))])
+
+    @classmethod
+    def __get_maximum_number_elements(cls, tups: tuple) -> None:
+        cls.maximum_number_elements = max([len(tups[idx][0]) for idx in range(len(tups))])
+
+    @classmethod
+    def __get_x_idx(cls) -> list:
+        return list(range(0, cls.maximum_number_elements))
 
 
 if __name__ == '__main__':
