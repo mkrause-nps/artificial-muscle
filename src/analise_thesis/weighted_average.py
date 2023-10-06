@@ -18,6 +18,9 @@ class WeightedAverage:
         @return: a 2-tuple where the first value is the weighted mean, the second the weighted standard
                         deviation
         """
+        if not isinstance(data, list):
+            raise ValueError('input data must be a list')
+
         cls.__get_means_stddevs(data=data)
         cls.__compute_weights()
         wsm: float = cls.__sum_weighted_means()
