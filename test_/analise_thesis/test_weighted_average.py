@@ -9,8 +9,9 @@ class TestWeightedAverage(unittest.TestCase):
     def setUp(self):
         self.means = [3, 2, 5]
         self.stddevs = [0.2, 0.2, 0.4]
+        self.data_with_zeros = [(3, 0.1587), (2, 0.0), (2, 0.0), (5, 0.01659)]
         self.data = list(zip(self.means, self.stddevs))
-        self.weights = [1/0.04, 1/0.04, 1/0.16]
+        self.weights = [1 / 0.04, 1 / 0.04, 1 / 0.16]
         self.weighted_variances = [0.004444444444444445, 0.01, 0.0064]
 
     def test_get(self):
@@ -19,6 +20,15 @@ class TestWeightedAverage(unittest.TestCase):
         observed_average, observed_stddev = WeightedAverage.get(self.data)
         self.assertAlmostEqual(expected_average, observed_average)
         self.assertAlmostEqual(expected_stddev, observed_stddev)
+
+    def test_get_means_stddevs(self):
+        WeightedAverage._WeightedAverage__get_means_stddevs(self.data)
+        self.assertEqual(self.stddevs, WeightedAverage.stddevs)
+
+    def test_get_means_stddevs_with_zeros(self):
+        WeightedAverage._WeightedAverage__get_means_stddevs(self.data_with_zeros)
+        expected_stddevs = [0.1587, 0.0001, 0.0001, 0.01659]
+        self.assertEqual(expected_stddevs, WeightedAverage.stddevs)
 
     def test_sum_weighted_means(self):
         WeightedAverage._WeightedAverage__get_means_stddevs(self.data)

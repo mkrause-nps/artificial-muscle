@@ -9,6 +9,7 @@ class WeightedAverage:
     stddevs = None
     weights = None
     variances = None
+    float_zero = 0.0
 
     @classmethod
     def get(cls, data: list[tuple]) -> tuple:
@@ -23,12 +24,19 @@ class WeightedAverage:
 
         cls.__get_means_stddevs(data=data)
         cls.__compute_weights()
+
         wsm: float = cls.__sum_weighted_means()
         sows: float = cls.__sum_weights()
-        weighted_average: float = wsm / sows
-
+        try:
+            weighted_average: float = wsm / sows
+        except ZeroDivisionError:
+            print('Sum of Weights is 0...')
+            weighted_average = wsm
         wsv = cls.__sum_weighted_variances()
-        grand_variance = wsv / (sows * sows)
+        try:
+            grand_variance = wsv / (sows * sows)
+        except ZeroDivisionError:
+            grand_variance = wsv
         weighted_stddev = math.sqrt(grand_variance)
 
         return weighted_average, weighted_stddev
@@ -36,26 +44,41 @@ class WeightedAverage:
     @classmethod
     def __get_means_stddevs(cls, data: list[tuple]) -> None:
         """Create means and stddevs as class variables"""
-        means_tup, stddevs_tup = list(zip(*data))
-        cls.means: list = list(means_tup)
-        cls.stddevs: list = list(stddevs_tup)
+        try:
+            means_tup, stddevs_tup = list(zip(*data))
+            cls.means: list = list(means_tup)
+            if cls.__array_contains_zeros(list(stddevs_tup)):
+                # If the resistance value was the instrument's out-of-range-value, its standard deviation is 0. In
+                # that case, we have to set an arbitrary standard deviation to avoid division by 0 errors. That
+                # arbitrary value is 0.0001, which seems a reasonable guess.
+                cls.stddevs = list(map(lambda x: x + 0.0001 if x == 0.0 else x, list(stddevs_tup)))
+            else:
+                cls.stddevs: list = list(stddevs_tup)
+        except ValueError:
+            print(f'data seems to be empty: {len(data)}')
 
     @classmethod
     def __sum_weighted_means(cls) -> float:
         """Return sum of weighted means (swm)"""
         if len(cls.means) != len(cls.weights):
+            print(f'means: {cls.means}')
+            print(f'weights: {cls.weights}')
             raise ValueError("Lists of means and weights need to have the same number of elements")
-
         return sum(cls.__multiply_lists_elementwise(u=cls.means, v=cls.weights))
 
     @classmethod
     def __compute_weights(cls) -> None:
         """Compute a list of weights corresponding to a standard deviation as a class variable"""
-        cls.weights: list[float] = [1 / (sigma * sigma) for sigma in cls.stddevs]
+        print(f'stddevs: {cls.stddevs}')
+        try:
+            cls.weights: list[float] = [1 / (sigma * sigma) for sigma in cls.stddevs]
+        except ZeroDivisionError:
+            print(f'The standard deviation seems to contain value 0.0: {cls.stddevs}')
 
     @classmethod
     def __sum_weights(cls) -> float:
         """Return sum of weights (sows)"""
+        print(f'cls.weights: {cls.weights}')
         return sum(cls.weights)
 
     @classmethod
@@ -79,5 +102,9 @@ class WeightedAverage:
 
     @staticmethod
     def __multiply_lists_elementwise(u: list, v: list) -> list:
-        """Return the inner product of two vectors"""
+        """Return the product of two lists elementwise"""
         return list(map(lambda tup: tup[0] * tup[1], list(zip(u, v))))
+
+    @classmethod
+    def __array_contains_zeros(cls, arr: list):
+        return cls.float_zero in arr
