@@ -117,3 +117,14 @@ class PlotUtils:
             extent = im[0].get_extent()
             ax.set_aspect(abs((extent[1] - extent[0]) / (extent[3] - extent[2])) / aspect)
 
+    @staticmethod
+    def lst_tuples_to_lists(data: list) -> tuple[list, list]:
+        """Return two lists
+        @param data:    list of one or more 2-tuples.
+        @return:        two lists, the first list contains all items at index 0 of each
+                        2-tuple, the other each items at index 1
+        """
+        idx_ydata = 0
+        idx_yerr = 1
+        return list(map(lambda x: x[idx_ydata], data)), list(map(lambda x: x[idx_yerr], data))
+
