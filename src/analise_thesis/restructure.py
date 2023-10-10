@@ -18,9 +18,11 @@ class Restructure:
                         2-tuple corresponds to the y-data value and the second to the y-error
         """
 
-        cls.__get_maximum_number_elements(tups=tups)
-        x_idx_list = cls.__get_x_idx()
         restructured_data = []
+        cls.__get_maximum_number_elements(tups=tups)
+        if cls.maximum_number_elements == 0:
+            return restructured_data
+        x_idx_list = cls.__get_x_idx()
         for x_idx in x_idx_list:
             groomed_tups = cls.__triage_if_idx_out_of_range(tups=tups, idx=x_idx)
             restructured_data.append(
@@ -49,7 +51,10 @@ class Restructure:
 
     @classmethod
     def __get_maximum_number_elements(cls, tups: tuple) -> None:
-        cls.maximum_number_elements = max([len(tups[idx][0]) for idx in range(len(tups))])
+        try:
+            cls.maximum_number_elements = max([len(tups[idx][0]) for idx in range(len(tups))])
+        except ValueError:
+            print(f'tups seems to be empty: {len(tups)}')
 
     @classmethod
     def __get_x_idx(cls) -> list:
