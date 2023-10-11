@@ -9,7 +9,6 @@ from typing import Tuple
 
 
 class PlotUtils:
-
     glob_figpath = None
     user_fig_directory = '/data'
 
@@ -23,13 +22,39 @@ class PlotUtils:
             os.makedirs(cls.glob_figpath)
 
     @classmethod
-    def plot_scatter(cls, xdata: list, ydata: list, yerr: list, title=None, xlabel=None, xlabel_prefix=None, xlim=None,
-                     xticklabels: str = None, ylabel=None, figname=None, ylim=None, yscale='linear',
-                     xticks: list = None, plotsize_adjust: dict = None, hide_inner: bool = False, capsize=5,
-                     subplot_config: dict = {'nrows': 1, 'ncols': 2}, colors=None, errbar_dir: str = 'both') -> None:
-        """Create scatterplot of data with standard deviation as errorbars"""
+    def plot_scatter(cls, xdata: list, ydata: list, yerr: list, title=None, xlabel: str=None, xlabel_prefix: str=None,
+                     xlim=None, xticklabels: str = None, ylabel: str=None, figname: str=None, fig_format: str = 'png',
+                     ylim=None, yscale:str ='linear',
+                     aspect: float | str = None, xticks: list = None, plotsize_adjust: dict = None,
+                     hide_inner: bool = False, capsize: int =5, subplot_config: dict = {'nrows': 1, 'ncols': 2}, colors=None,
+                     errbar_dir: str = 'both') -> None:
+        """Create scatterplot of data with standard deviation as errorbars
+        @param xdata:
+        @param ydata:
+        @param yerr:
+        @param title:
+        @param xlabel:
+        @param xlabel_prefix:
+        @param xlim:
+        @param xticklabels:
+        @param ylabel:
+        @param figname:
+        @param fig_format:
+        @param ylim:
+        @param yscale:
+        @param aspect:
+        @param xticks:
+        @param plotsize_adjust:
+        @param hide_inner:
+        @param capsize:
+        @param subplot_config:
+        @param colors:
+        @param errbar_dir:
+        """
         fig, ax = plt.subplots(subplot_config['nrows'], subplot_config['ncols'])
         fig.suptitle(title)
+        if aspect:
+            ax.set_aspect(aspect=aspect)
         # TODO: what's the deal with the commented out code?
         # if not colors:
         #     colors = ['tab:blue', 'tab:orange', 'tab:green']
@@ -65,7 +90,7 @@ class PlotUtils:
                 ax.set_xlim(xlim)
             if ylim:
                 ax.set_ylim(ylim)
-            cls.__force_aspect(ax=ax)
+            # cls.__force_aspect(ax=ax)
         else:
             for idx, datum in enumerate(data):
                 if colors:
@@ -76,7 +101,7 @@ class PlotUtils:
                                      markersize=10, linestyle='none')
                 else:
                     ax[idx].errorbar(datum[0], datum[1], yerr=datum[2], capsize=capsize,
-                                     marker='o',  markersize=10, linestyle='none')
+                                     marker='o', markersize=10, linestyle='none')
                 if xlabel_prefix:
                     ax[idx].set_xlabel(f'{xlabel_prefix} ({xlabel[idx]})')
                 else:
@@ -94,7 +119,7 @@ class PlotUtils:
             for a in ax.flat:
                 a.label_outer()
         else:
-            fig.tight_layout(pad=4.0)
+            fig.tight_layout(pad=1.0)
         if plotsize_adjust:
             fig.subplots_adjust(left=plotsize_adjust['left'],
                                 right=plotsize_adjust['right'],
@@ -104,7 +129,7 @@ class PlotUtils:
         #        ax.set_xticklabels(xticklabels)
         if figname:
             figpath = os.path.join(cls.glob_figpath, figname)
-            fig.savefig(figpath)
+            fig.savefig(figpath, format=fig_format)
 
     @staticmethod
     def __force_aspect(ax: plt.Axes, aspect: int = 1) -> None:
@@ -127,4 +152,3 @@ class PlotUtils:
         idx_ydata = 0
         idx_yerr = 1
         return list(map(lambda x: x[idx_ydata], data)), list(map(lambda x: x[idx_yerr], data))
-
