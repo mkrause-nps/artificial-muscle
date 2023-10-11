@@ -5,6 +5,7 @@ import pandas as pd
 
 
 class Loader:
+    """Static class to read and write channel data"""
 
     @classmethod
     def read_data(cls, data_path: str, sheet_name: str) -> pd.DataFrame | None:
