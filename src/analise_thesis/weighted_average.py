@@ -10,6 +10,9 @@ class WeightedAverage:
     weights = None
     variances = None
     float_zero = 0.0
+    # If the resistance value was the instrument's out-of-range-value, its standard deviation is 0. In that case, we
+    # have to set an arbitrary standard deviation to avoid division by 0 errors. It is an attempted reasonable guess.
+    ASSUMED_STDEV_FOR_OUT_OF_RANGE = 10.0
 
     @classmethod
     def get(cls, data: list[tuple]) -> tuple:
@@ -48,10 +51,8 @@ class WeightedAverage:
             means_tup, stddevs_tup = list(zip(*data))
             cls.means: list = list(means_tup)
             if cls.__array_contains_zeros(list(stddevs_tup)):
-                # If the resistance value was the instrument's out-of-range-value, its standard deviation is 0. In
-                # that case, we have to set an arbitrary standard deviation to avoid division by 0 errors. That
-                # arbitrary value is 0.0001, which seems a reasonable guess.
-                cls.stddevs = list(map(lambda x: x + 0.0001 if x == 0.0 else x, list(stddevs_tup)))
+                cls.stddevs = list(
+                    map(lambda x: x + cls.ASSUMED_STDEV_FOR_OUT_OF_RANGE if x == 0.0 else x, list(stddevs_tup)))
             else:
                 cls.stddevs: list = list(stddevs_tup)
         except ValueError:
