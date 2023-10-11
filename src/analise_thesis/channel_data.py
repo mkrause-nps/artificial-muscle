@@ -24,6 +24,7 @@ class ChannelData(ChannelDataInterface):
         self.df: pd.DataFrame = self.put_data()
 
     def put_data(self) -> pd.DataFrame:
+        """Load data from Excel file and store it as a dataframe"""
         data_filename = self.__get_data_filename()
         sheet_name = self.__get_sheetname()
         df: pd.DataFrame = Loader.read_data(data_path=data_filename, sheet_name=sheet_name)
@@ -53,6 +54,7 @@ class ChannelData(ChannelDataInterface):
         return os.path.join(Config.excel_spreadsheet_path, Config.spreadsheet_filename)
 
     def __get_sheetname(self) -> str:
+        """Get sheetname based on the chip type"""
         return f'{self.__chip_type.capitalize()}{Config.sheet_name_affix}'
 
     def __compose_chip_name(self, chip_number):
