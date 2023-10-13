@@ -4,8 +4,13 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import os
 import numpy as np
-from statistics import mean, stdev
-from typing import Tuple
+from typing import TypedDict
+
+
+class SubPlot(TypedDict):
+    """Defines the type for a figure's subplot configuration"""
+    nrows: int
+    ncols: int
 
 
 class PlotUtils:
@@ -22,16 +27,20 @@ class PlotUtils:
             os.makedirs(cls.glob_figpath)
 
     @classmethod
-    def plot_scatter(cls, xdata: list, ydata: list, yerr: list, title=None, xlabel: str=None, xlabel_prefix: str=None,
-                     xlim=None, xticklabels: str = None, ylabel: str=None, figname: str=None, fig_format: str = 'png',
-                     ylim=None, yscale:str ='linear',
+    def plot_scatter(cls, xdata: list, ydata: list, yerr: list, nrows: int, ncols: int, title=None, xlabel: str = None,
+                     xlabel_prefix: str = None,
+                     xlim=None, xticklabels: str = None, ylabel: str = None, figname: str = None,
+                     fig_format: str = 'png',
+                     ylim=None, yscale: str = 'linear',
                      aspect: float | str = None, xticks: list = None, plotsize_adjust: dict = None,
-                     hide_inner: bool = False, capsize: int =5, subplot_config: dict = {'nrows': 1, 'ncols': 2}, colors=None,
-                     errbar_dir: str = 'both') -> None:
+                     hide_inner: bool = False, capsize: int = 5,
+                     colors=None, errbar_dir: str = 'both') -> None:
         """Create scatterplot of data with standard deviation as errorbars
         @param xdata:
         @param ydata:
         @param yerr:
+        @param ncols: number of subplot rows (int)
+        @param nrows: number of subplot columns (int)
         @param title:
         @param xlabel:
         @param xlabel_prefix:
@@ -51,6 +60,9 @@ class PlotUtils:
         @param colors:
         @param errbar_dir:
         """
+
+        subplot_config = SubPlot(nrows=nrows, ncols=ncols)
+
         fig, ax = plt.subplots(subplot_config['nrows'], subplot_config['ncols'])
         fig.suptitle(title)
         if aspect:
