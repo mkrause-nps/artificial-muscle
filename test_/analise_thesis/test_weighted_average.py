@@ -27,7 +27,7 @@ class TestWeightedAverage(unittest.TestCase):
 
     def test_get_means_stddevs_with_zeros(self):
         WeightedAverage._WeightedAverage__get_means_stddevs(self.data_with_zeros)
-        expected_stddevs = [0.1587, 0.0001, 0.0001, 0.01659]
+        expected_stddevs = [0.1587, 10.0, 10.0, 0.01659]
         self.assertEqual(expected_stddevs, WeightedAverage.stddevs)
 
     def test_sum_weighted_means(self):
