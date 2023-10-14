@@ -27,13 +27,11 @@ class PlotUtils:
             os.makedirs(cls.glob_figpath)
 
     @classmethod
-    def plot_scatter(cls, xdata: list, ydata: list, yerr: list, nrows: int, ncols: int, title=None, xlabel: str = None,
-                     xlabel_prefix: str = None,
-                     xlim=None, xticklabels: str = None, ylabel: str = None, figname: str = None,
-                     fig_format: str = 'png',
-                     ylim=None, yscale: str = 'linear',
-                     aspect: float | str = None, xticks: list = None, plotsize_adjust: dict = None,
-                     hide_inner: bool = False, capsize: int = 5,
+    def plot_scatter(cls, xdata: list, ydata: list, yerr: list, nrows: int, ncols: int, title=None,
+                     xlabel: str = None, ylabel: str = None, xlabel_prefix: str = None,
+                     xlim: list = None, xticks: list = None, ylim: list = None, yscale: str = 'linear',
+                     figname: str = None, fig_format: str = 'png', aspect: float | str = None,
+                     plotsize_adjust: dict = None, hide_inner: bool = False, capsize: int = 5,
                      colors=None, errbar_dir: str = 'both') -> None:
         """Create scatterplot of data with standard deviation as errorbars
         @param xdata:
@@ -45,7 +43,6 @@ class PlotUtils:
         @param xlabel:
         @param xlabel_prefix:
         @param xlim:
-        @param xticklabels:
         @param ylabel:
         @param figname:
         @param fig_format:
