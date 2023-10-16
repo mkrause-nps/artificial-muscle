@@ -8,7 +8,7 @@ from src.plot_utils import PlotUtils
 
 class Plotter:
     def __init__(self, data: list[tuple], nrows: int, ncols: int, xlabel: str, ylabel: str,
-                 xlim: list, ylim: list, capsize: int) -> None:
+                 xlim: list, ylim: list, capsize: int, fig_format: str = 'png') -> None:
         """
         @param data:
         @param nrows:
@@ -18,8 +18,10 @@ class Plotter:
         @param xlim:
         @param ylim:
         @param capsize:
+        @type fig_format: (str) default is 'png', but can be set to 'svg' for vector graphics
         """
 
+        self.fig_format = fig_format
         self.data: list[tuple] = data
         self.SAMPLE_NUM_CUTOFF = 1
         self.nrows = nrows
@@ -39,7 +41,8 @@ class Plotter:
                 xticks = list(range(1, channel_data.num_injections + 1))
                 title = f'Chip type: {datum[2]}, id: {datum[1]}, width: {datum[0]}'
                 figname = f'chip_id_{datum[1]}_type_{datum[2]}_width_{datum[0]}.png'
-                PlotUtils.plot_scatter(xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, figname=figname,
+                PlotUtils.plot_scatter(xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols,
+                                       figname=figname, fig_format=self.fig_format,
                                        title=title, capsize=self.capsize, xlabel=self.xlabel, ylabel=self.ylabel,
                                        xticks=xticks, colors=None)
 
@@ -97,8 +100,8 @@ class Plotter:
         xticks = list(range(1, len(xdata) + 1))
 
         PlotUtils.plot_scatter(xdata, weighted_ydata, yerr=weighted_yerr, nrows=self.nrows, ncols=self.ncols,
-                               figname=figname, title=title, capsize=self.capsize, xlabel=self.xlabel,
-                               ylabel=self.ylabel, xticks=xticks, colors=None)
+                               figname=figname, fig_format=self.fig_format, title=title, capsize=self.capsize,
+                               xlabel=self.xlabel, ylabel=self.ylabel, xticks=xticks, colors=None)
 
         return out_data
 
