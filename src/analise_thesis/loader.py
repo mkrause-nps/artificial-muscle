@@ -14,10 +14,14 @@ class Loader:
         data_path -- the absolute path to an Excel spreadsheet
         sheet_name -- the name of the sheet in that spreadsheet file
         """
-        if not os.path.exists(data_path):
+        try:
+            df = pd.read_excel(data_path, sheet_name=sheet_name)
+        except FileExistsError as e:
+            print(f'{e}: check if that Excel file exists in the directory - if not add it')
             return None
-
-        df = pd.read_excel(data_path, sheet_name=sheet_name)
+        except FileNotFoundError as e:
+            print(f'{e}: check if that Excel file exists in the directory - if not add it')
+            return None
         df.dropna(axis='rows', how='all', inplace=True)  # remove all rows where all values are NaN's
         df.fillna(method='ffill', inplace=True)          # repeat the last value (from top) if followed by a NaN
         df.dropna(axis='columns', inplace=True)          # drop columns that have at least one NaN
