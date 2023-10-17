@@ -14,9 +14,8 @@ class TestPlotter(unittest.TestCase):
             (100, 3, 'hard'),
         ]
 
-        self.plotter_test = Plotter(data=data_hard, nrows=1, ncols=1,
-                                    xlabel="injection number", ylabel='R [K$\Omega$]',
-                                    xlim=[0, 5], ylim=[0, 1e6], capsize=10)
+        self.plotter_test = Plotter(data=data_hard, nrows=1, ncols=1, xlabel="injection number", ylabel='R [K$\Omega$]',
+                                    xlim=[0, 5], ylim=[0, 1e6], tick_fontsize=12, fig_format='png', capsize=10)
 
     def test_filter_by_width(self):
         data_from_single_channel_width = self.plotter_test.filter_by_width(width=100)
