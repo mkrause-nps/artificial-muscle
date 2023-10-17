@@ -8,7 +8,7 @@ from src.plot_utils import PlotUtils
 
 class Plotter:
     def __init__(self, data: list[tuple], nrows: int, ncols: int, xlabel: str, ylabel: str,
-                 xlim: list, ylim: list, capsize: int, fig_format: str) -> None:
+                 xlim: list, ylim: list, tick_fontsize: int, capsize: int, fig_format: str) -> None:
         """
         @param data:
         @param nrows:
@@ -17,9 +17,11 @@ class Plotter:
         @param ylabel:
         @param xlim:
         @param ylim:
+        @param tick_fontsize: font size for ticks on x- and y-axes
         @param capsize:
         @type fig_format: (str) 'png' or 'svg' for vector graphics
         """
+
         self.data: list[tuple] = data
         self.SAMPLE_NUM_CUTOFF = 1
         self.nrows = nrows
@@ -30,6 +32,7 @@ class Plotter:
         self.ylim = ylim
         self.capsize = capsize
         self.fig_format = fig_format
+        self.tick_fontsize = tick_fontsize
 
     def run_individual_chips(self) -> None:
         """Plot all injections of a single chip ID and write plot to disk"""
@@ -40,10 +43,10 @@ class Plotter:
                 xticks = list(range(1, channel_data.num_injections + 1))
                 title = f'Chip type: {datum[2]}, id: {datum[1]}, width: {datum[0]}'
                 figname = f'chip_id_{datum[1]}_type_{datum[2]}_width_{datum[0]}.{self.fig_format}'
-                PlotUtils.plot_scatter(xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols,
-                                       figname=figname, fig_format=self.fig_format,
-                                       title=title, capsize=self.capsize, xlabel=self.xlabel, ylabel=self.ylabel,
-                                       xticks=xticks, colors=None)
+                PlotUtils.plot_scatter(xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, title=title,
+                                       xlabel=self.xlabel, ylabel=self.ylabel, xticks=xticks,
+                                       tick_fontsize=self.tick_fontsize, figname=figname, fig_format=self.fig_format,
+                                       capsize=self.capsize, colors=None)
 
     def get_averaged_channel_data(self, data_subset: list[tuple]) -> dict | None:
         """Return weighted average and standard deviation for one channel width from all chips
@@ -97,8 +100,8 @@ class Plotter:
         xticks = list(range(1, len(xdata) + 1))
 
         PlotUtils.plot_scatter(xdata, weighted_ydata, yerr=weighted_yerr, nrows=self.nrows, ncols=self.ncols,
-                               figname=figname, fig_format=self.fig_format, title=title, capsize=self.capsize,
-                               xlabel=self.xlabel, ylabel=self.ylabel, xticks=xticks, colors=None)
+                               title=title, xlabel=self.xlabel, ylabel=self.ylabel, xticks=xticks, figname=figname,
+                               fig_format=self.fig_format, capsize=self.capsize, colors=None)
 
         return out_data
 
