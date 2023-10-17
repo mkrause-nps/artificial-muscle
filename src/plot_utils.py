@@ -28,7 +28,7 @@ class PlotUtils:
 
     @classmethod
     def plot_scatter(cls, xdata: list, ydata: list, yerr: list, nrows: int, ncols: int, title=None,
-                     xlabel: str = None, ylabel: str = None, xlabel_prefix: str = None,
+                     xlabel: str = None, ylabel: str = None, xlabel_prefix: str = None, tick_fontsize: int = 12,
                      xlim: list = None, xticks: list = None, ylim: list = None, yscale: str = 'linear',
                      figname: str = None, fig_format: str = 'png', aspect: float | str = None,
                      plotsize_adjust: dict = None, hide_inner: bool = False, capsize: int = 5,
@@ -53,9 +53,9 @@ class PlotUtils:
         @param plotsize_adjust:
         @param hide_inner:
         @param capsize:
-        @param subplot_config:
         @param colors:
         @param errbar_dir:
+        @param tick_fontsize: font size for tick labels (in pixels), default is 12
         """
 
         subplot_config = SubPlot(nrows=nrows, ncols=ncols)
@@ -134,8 +134,10 @@ class PlotUtils:
                                 right=plotsize_adjust['right'],
                                 top=plotsize_adjust['top'],
                                 bottom=plotsize_adjust['bottom'])
-        # if xticklabels:
-        #        ax.set_xticklabels(xticklabels)
+
+        ax.tick_parameters(axis='x', labelsize=tick_fontsize)
+        ax.tick_parameters(axis='y', labelsize=tick_fontsize)
+
         if figname:
             figpath = os.path.join(cls.glob_figpath, figname)
             fig.savefig(figpath, format=fig_format)
