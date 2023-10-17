@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import os
+import sys
+
 import pandas as pd
 from src.analise_thesis.loader import Loader
 from src.analise_thesis.config import Config
@@ -28,6 +30,7 @@ class ChannelData(ChannelDataInterface):
         data_filename = self.__get_data_filename()
         sheet_name = self.__get_sheetname()
         df: pd.DataFrame = Loader.read_data(data_path=data_filename, sheet_name=sheet_name)
+        self.__abort_execution_if_none(df=df, data_filename=data_filename)
         if not df.empty:
             self.is_data = True
         column_value = self.__compose_chip_name(chip_number=self.__chip_id)
@@ -59,6 +62,13 @@ class ChannelData(ChannelDataInterface):
 
     def __compose_chip_name(self, chip_number):
         return f'{chip_number}-{self.__channel_width}'
+
+    @staticmethod
+    def __abort_execution_if_none(df, data_filename):
+        """Aborts execution if df is None"""
+        if df is None:
+            msg = f"Can't find Excel file {data_filename} - aborting"
+            sys.exit(msg)
 
     def __str__(self):
         return f'Channel Data: width: {self.__channel_width}'
