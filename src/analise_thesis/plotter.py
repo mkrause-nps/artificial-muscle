@@ -8,7 +8,7 @@ from src.plot_utils import PlotUtils
 
 class Plotter:
     def __init__(self, data: list[tuple], nrows: int, ncols: int, xlabel: str, ylabel: str,
-                 xlim: list, ylim: list, tick_fontsize: int, capsize: int, fig_format: str) -> None:
+                 xlim: list, ylim: list, capsize: int, fig_format: str, fontsize: float = 12.0) -> None:
         """
         @param data:
         @param nrows:
@@ -17,7 +17,7 @@ class Plotter:
         @param ylabel:
         @param xlim:
         @param ylim:
-        @param tick_fontsize: font size for ticks on x- and y-axes
+        @param fontsize: font size for ticks on x- and y-axes
         @param capsize:
         @type fig_format: (str) 'png' or 'svg' for vector graphics
         """
@@ -32,7 +32,7 @@ class Plotter:
         self.ylim = ylim
         self.capsize = capsize
         self.fig_format = fig_format
-        self.tick_fontsize = tick_fontsize
+        self.fontsize = fontsize
 
     def run_individual_chips(self) -> None:
         """Plot all injections of a single chip ID and write plot to disk"""
@@ -40,12 +40,13 @@ class Plotter:
             for datum in self.data:
                 channel_data = ChannelData(channel_width=datum[0], chip_id=datum[1], chip_type=datum[2])
                 xdata, ydata, yerr = channel_data.get_data()
+                xdata = list(range(1, 6))  # HACK: override xdata here so the x-axis of all plots is the same
                 xticks = list(range(1, channel_data.num_injections + 1))
                 title = f'Chip type: {datum[2]}, id: {datum[1]}, width: {datum[0]}'
                 figname = f'chip_id_{datum[1]}_type_{datum[2]}_width_{datum[0]}.{self.fig_format}'
                 PlotUtils.plot_scatter(xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, title=title,
                                        xlabel=self.xlabel, ylabel=self.ylabel, xticks=xticks,
-                                       tick_fontsize=self.tick_fontsize, figname=figname, fig_format=self.fig_format,
+                                       fontsize=self.fontsize, figname=figname, fig_format=self.fig_format,
                                        capsize=self.capsize, colors=None)
 
     def get_averaged_channel_data(self, data_subset: list[tuple]) -> dict | None:
