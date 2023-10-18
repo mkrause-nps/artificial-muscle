@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import os
@@ -28,9 +29,9 @@ class PlotUtils:
 
     @classmethod
     def plot_scatter(cls, xdata: list, ydata: list, yerr: list, nrows: int, ncols: int, title=None,
-                     xlabel: str = None, ylabel: str = None, xlabel_prefix: str = None, tick_fontsize: int = 12,
+                     xlabel: str = None, ylabel: str = None, xlabel_prefix: str = None, fontsize: float = 12.0,
                      xlim: list = None, xticks: list = None, ylim: list = None, yscale: str = 'linear',
-                     figname: str = None, fig_format: str = 'png', aspect: float | str = None,
+                     figname: str = None, fig_format: str = 'png', aspect: float | None = None,
                      plotsize_adjust: dict = None, hide_inner: bool = False, capsize: int = 5,
                      colors=None, errbar_dir: str = 'both') -> None:
         """Create scatterplot of data with standard deviation as errorbars
@@ -55,15 +56,16 @@ class PlotUtils:
         @param capsize:
         @param colors:
         @param errbar_dir:
-        @param tick_fontsize: font size for tick labels (in pixels), default is 12
+        @param fontsize: font size for tick labels (in pixels), default is 12
         """
+
+        cls.__set_global_font(matplotlib_obj=matplotlib, fontsize=fontsize)
 
         subplot_config = SubPlot(nrows=nrows, ncols=ncols)
 
         fig, ax = plt.subplots(subplot_config['nrows'], subplot_config['ncols'])
         fig.suptitle(title)
-        if aspect:
-            ax.set_aspect(aspect=aspect)
+
         # TODO: what's the deal with the commented out code?
         # if not colors:
         #     colors = ['tab:blue', 'tab:orange', 'tab:green']
@@ -99,7 +101,7 @@ class PlotUtils:
                 ax.set_xlim(xlim)
             if ylim:
                 ax.set_ylim(ylim)
-            # cls.__force_aspect(ax=ax)
+
         else:
             for idx, datum in enumerate(data):
                 if colors:
@@ -135,8 +137,13 @@ class PlotUtils:
                                 top=plotsize_adjust['top'],
                                 bottom=plotsize_adjust['bottom'])
 
-        ax.tick_parameters(axis='x', labelsize=tick_fontsize)
-        ax.tick_parameters(axis='y', labelsize=tick_fontsize)
+        # Fontsize
+        # txt = text.Text()
+        # ax.set_xlabel(txt.set_fontsize(fontsize='medium'))   # ToDo: axis label disappears - why?
+        ax.tick_params(axis='both', labelsize=fontsize)
+
+        if aspect:
+            ax.set_box_aspect(aspect=aspect)
 
         if figname:
             figpath = os.path.join(cls.glob_figpath, figname)
@@ -163,3 +170,11 @@ class PlotUtils:
         idx_ydata = 0
         idx_yerr = 1
         return list(map(lambda x: x[idx_ydata], data)), list(map(lambda x: x[idx_yerr], data))
+
+    @staticmethod
+    def __set_global_font(matplotlib_obj: matplotlib, fontsize: float) -> None:
+        """Sets font parameters for all plots"""
+        font = {'family': 'Liberation Sans',
+                'weight': 'normal',
+                'size': fontsize}
+        matplotlib_obj.rc('font', **font)
