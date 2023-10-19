@@ -33,8 +33,9 @@ class PlotUtils:
                      xlim: list = None, xticks: list = None, ylim: list = None, yscale: str = 'linear',
                      figname: str = None, fig_format: str = 'png', aspect: float | None = None,
                      plotsize_adjust: dict = None, hide_inner: bool = False, capsize: int = 5,
-                     colors=None, errbar_dir: str = 'both') -> None:
+                     colors=None, annotate: list | None = None, errbar_dir: str = 'both') -> None:
         """Create scatterplot of data with standard deviation as errorbars
+
         @param xdata:
         @param ydata:
         @param yerr:
@@ -55,8 +56,10 @@ class PlotUtils:
         @param hide_inner:
         @param capsize:
         @param colors:
+        @param annotate: (list) a list of items to annotate each data point; number of elements in that list
+                         equal the number of elements in xdata
         @param errbar_dir:
-        @param fontsize: font size for tick labels (in pixels), default is 12
+        @param fontsize: (float) font size for all labels (in pixels), default is 12
         """
 
         cls.__set_global_font(matplotlib_obj=matplotlib, fontsize=fontsize)
@@ -79,6 +82,7 @@ class PlotUtils:
                     _yerr = np.zeros((2, len(err)))
                     _yerr[1, :] = err
                     yerr[idx] = _yerr
+
         data = list(zip(xdata, ydata, yerr))
         if subplot_config['nrows'] == 1 and subplot_config['ncols'] == 1:
             for idx, datum in enumerate(data):
@@ -92,6 +96,11 @@ class PlotUtils:
                     ax.errorbar(datum[0], datum[1], yerr=datum[2], capsize=capsize,
                                 ecolor=color, markerfacecolor=color, markeredgecolor=color,
                                 marker='o', markersize=10, linestyle='none')
+                if annotate and not cls.__is_empty(annotate):
+                    text = f'({annotate[idx]})'
+                    xy = (datum[0], datum[1])
+                    ax.annotate(text, xy, xycoords='data', xytext=(0, 15), textcoords='offset pixels',
+                                fontstyle='italic')
             ax.set_xlabel(xlabel)
             ax.set_ylabel(ylabel)
             ax.set_yscale(yscale)
@@ -178,3 +187,7 @@ class PlotUtils:
                 'weight': 'normal',
                 'size': fontsize}
         matplotlib_obj.rc('font', **font)
+
+    @staticmethod
+    def __is_empty(lst: list) -> bool:
+        return len(lst) == 0
