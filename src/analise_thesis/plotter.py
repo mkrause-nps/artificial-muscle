@@ -6,10 +6,19 @@ from src.analise_thesis.weighted_average import WeightedAverage
 from src.plot_utils import PlotUtils
 
 
+class MyList(list):
+    """Extends list class with a method that pads a list with specific values"""
+
+    def ljust(self, n: int, fill_value: str | int | None = ''):
+        """Pad list in place with fill_value, with total length n"""
+        return self + [fill_value] * (n - len(self))
+
+
 class Plotter:
-    def __init__(self, data: list[tuple], nrows: int, ncols: int, xlabel: str, ylabel: str,
-                 xlim: list, ylim: list, capsize: int, fig_format: str, fontsize: float = 12.0) -> None:
+    def __init__(self, data: list[tuple], nrows: int, ncols: int, xlabel: str, ylabel: str, xlim: list, ylim: list,
+                 aspect: int, capsize: int, fig_format: str, fontsize: float = 12.0) -> None:
         """
+
         @param data:
         @param nrows:
         @param ncols:
@@ -17,6 +26,7 @@ class Plotter:
         @param ylabel:
         @param xlim:
         @param ylim:
+        @type aspect: (float) set the aspect ratio of x- and y-axis, regardless of data ranges
         @param fontsize: font size for ticks on x- and y-axes
         @param capsize:
         @type fig_format: (str) 'png' or 'svg' for vector graphics
@@ -30,24 +40,31 @@ class Plotter:
         self.ylabel = ylabel
         self.xlim = xlim
         self.ylim = ylim
+        self.aspect = aspect
         self.capsize = capsize
         self.fig_format = fig_format
         self.fontsize = fontsize
 
     def run_individual_chips(self) -> None:
+        lxlim = 0
+        rxlim = 6
         """Plot all injections of a single chip ID and write plot to disk"""
         if self.data:
             for datum in self.data:
                 channel_data = ChannelData(channel_width=datum[0], chip_id=datum[1], chip_type=datum[2])
                 xdata, ydata, yerr = channel_data.get_data()
-                xdata = list(range(1, 6))  # HACK: override xdata here so the x-axis of all plots is the same
-                xticks = list(range(1, channel_data.num_injections + 1))
+                xdata = list(range(1, rxlim))  # HACK: override xdata so x-axis of all plots has same number of elements
+                xticks = list(range(1, len(xdata) + 1))  # list(range(1, channel_data.num_injections + 1))
                 title = f'Chip type: {datum[2]}, id: {datum[1]}, width: {datum[0]}'
                 figname = f'chip_id_{datum[1]}_type_{datum[2]}_width_{datum[0]}.{self.fig_format}'
-                PlotUtils.plot_scatter(xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, title=title,
-                                       xlabel=self.xlabel, ylabel=self.ylabel, xticks=xticks,
-                                       fontsize=self.fontsize, figname=figname, fig_format=self.fig_format,
-                                       capsize=self.capsize, colors=None)
+                # PlotUtils.plot_scatter(xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, title=title,
+                #                        xlabel=self.xlabel, ylabel=self.ylabel, xlim=[lxlim, rxlim], xticks=xticks,
+                #                        fontsize=self.fontsize, figname=figname, fig_format=self.fig_format,
+                #                        aspect=self.aspect, capsize=self.capsize, colors=None)
+                PlotUtils.plot_scatter(xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, xlim=[lxlim, rxlim],
+                                       xticks=xticks, fontsize=self.fontsize, figname=figname,
+                                       fig_format=self.fig_format, aspect=self.aspect, capsize=self.capsize,
+                                       colors=None)
 
     def get_averaged_channel_data(self, data_subset: list[tuple]) -> dict | None:
         """Return weighted average and standard deviation for one channel width from all chips
