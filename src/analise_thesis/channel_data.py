@@ -30,12 +30,16 @@ class ChannelData(ChannelDataInterface):
         data_filename = self.__get_data_filename()
         sheet_name = self.__get_sheetname()
         df: pd.DataFrame = Loader.read_data(data_path=data_filename, sheet_name=sheet_name)
+        df = df.filter(
+            [Config.COLUMN_NAME_CHIP, self.COLUMN_INJECTION_NUM, self.COLUMN_RESISTANCE, self.COLUMN_STDDEV]
+        )
         self.__abort_execution_if_none(df=df, data_filename=data_filename)
         if not df.empty:
             self.is_data = True
         column_value = self.__compose_chip_name(chip_number=self.__chip_id)
         df = df.loc[df[Config.COLUMN_NAME_CHIP] == column_value]
-        self.num_injections = len(df.index)
+        injection_col = df[self.COLUMN_INJECTION_NUM]
+        self.num_injections = injection_col.max()   # len(df.index)
 
         return df
 
@@ -71,4 +75,8 @@ class ChannelData(ChannelDataInterface):
             sys.exit(msg)
 
     def __str__(self):
-        return f'Channel Data: width: {self.__channel_width}'
+        return (f'Channel Data:\n'
+                f'  width: {self.__channel_width}\n'
+                f'  chip_type: {self.__chip_type}\n'
+                f'  self.num_injections: {self.num_injections}'
+                )
