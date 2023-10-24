@@ -11,7 +11,7 @@ class Restructure:
     def restructure(cls, tups: tuple) -> list:
         """Return a list of lists, where data are restructured to match the input for WeightedAverage.get.
 
-        @param tups:    Tuple of tuples. Each innter tuple contains two lists. The first of those lists contains
+        @param tups:    Tuple of tuples. Each inner tuple contains two lists. The first of those lists contains
                         y-data, and the second corresponding y-errors. Both lists have the same length.
         @return:        A list of lists. Each inner list corresponds to one x-value. The inner list contains
                         2-tuples representing replications of an experiment where the first element of each
@@ -33,7 +33,7 @@ class Restructure:
 
     @classmethod
     def __triage_if_idx_out_of_range(cls, tups: tuple, idx: int) -> tuple:
-        """Removes lists from tups that a shorted than length idx and returns tuple"""
+        """Removes lists from tups that a shorter than length idx and returns tuple"""
         groomed_data = []
         for tup in tups:
             try:
@@ -59,7 +59,3 @@ class Restructure:
     @classmethod
     def __get_x_idx(cls) -> list:
         return list(range(0, cls.maximum_number_elements))
-
-
-if __name__ == '__main__':
-    pass
