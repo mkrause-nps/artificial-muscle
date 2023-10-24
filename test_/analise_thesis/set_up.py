@@ -3,6 +3,7 @@
 import unittest
 import os
 import pandas as pd
+from src.analise_thesis.plotter import Plotter
 
 
 class SetUp(unittest.TestCase):
@@ -25,8 +26,19 @@ class SetUp(unittest.TestCase):
         }
         self.df2 = pd.DataFrame(data2)
 
+        data_hard = [
+            (100, 1, 'hard'),
+            (200, 1, 'hard'),
+            (100, 2, 'hard'),
+            (100, 3, 'hard'),
+        ]
+
+        self.plotter_test = Plotter(data=data_hard, nrows=1, ncols=1, xlabel="injection number", ylabel='R [K$\Omega$]',
+                                    xlim=[0, 5], ylim=[0, 1e6], aspect=1.0, fontsize=12, fig_format='png', capsize=10)
+
     def tearDown(self) -> None:
-        file_to_remove = os.path.join(self.test_data_path, self.test_json_filename)
+        if self.test_data_path:
+            file_to_remove = os.path.join(self.test_data_path, self.test_json_filename)
         if os.path.exists(file_to_remove):
             os.remove(self.json_filename, )  # one test write that file to disk - remove it again
 
