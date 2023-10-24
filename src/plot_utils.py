@@ -40,7 +40,7 @@ class PlotUtils:
         @param ydata:
         @param yerr:
         @param ncols: number of subplot rows (int)
-        @param nrows: number of subplot columns (int)
+        @param nrows: number of subplot columns (int), i.e., the input to pyplot.subplot()
         @param title:
         @param xlabel:
         @param xlabel_prefix:
