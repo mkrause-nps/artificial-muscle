@@ -34,14 +34,12 @@ class TestPlotter(SetUp):
         # Now testing:
         channel_data_aggregated: list[tuple] = Plotter.aggregate_from_one_channel(
             channel_data=channel_data)
-        for tup in channel_data_aggregated:
-            print(tup)
-            observed = [
-                (len(tup[0]) == len(tup[1])),
-                (len(tup[0]) == len(tup[2])),
-                (len(tup[1]) == len(tup[2]))
-            ]
-            self.assertTrue(all(observed))
+        observed = [
+            (len(channel_data_aggregated[1][0][0]) == len(channel_data_aggregated[1][0][1]),
+             len(channel_data_aggregated[1][1][0]) == len(channel_data_aggregated[1][1][1]),
+             len(channel_data_aggregated[1][2][0]) == len(channel_data_aggregated[1][2][1]))
+        ]
+        self.assertTrue(all(observed))
 
     def test_get_averaged_channel_data(self):
         pass
