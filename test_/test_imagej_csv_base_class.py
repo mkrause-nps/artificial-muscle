@@ -8,7 +8,7 @@ from src.utilities import Utilities
 class TestImageJCsvBaseClass(unittest.TestCase):
 
     def setUp(self):
-        filename = os.path.join(self.__get_project_root(), 'test_/imagej_measurement_csv/vp_01_192um_black_4x.csv')
+        filename = os.path.join(Utilities.get_project_root(), 'test_/imagej_measurement_csv/vp_01_192um_black_4x.csv')
         self.test_csv_file = filename  # 'test_/imagej_measurement_csv/vp_01_192um_black_4x.csv'
         self.expected_output_from_load = [
             {'item_number': '1', 'Label': 'vp_01_192um_black_4x.tif', 'Length': '331.436'},
@@ -22,10 +22,3 @@ class TestImageJCsvBaseClass(unittest.TestCase):
         self.expected_output_from_filter_filelist = ['vp_01_608um_white_4x.csv', 'vp_01_512um_white_4x.csv',
                                                      'vp_01_608um_black_4x.csv']
         self.channel_length = Channel(imagej_data=self.expected_output_from_load)
-
-    # @staticmethod
-    # def __get_project_root() -> str:
-    #     """Get the absolute path of the project root."""
-    #     current_path = os.path.abspath(__file__)  # Get the absolute path of the current script
-    #     project_root = os.path.dirname(os.path.dirname(current_path))  # Go up two levels to reach the project root
-    #     return project_root

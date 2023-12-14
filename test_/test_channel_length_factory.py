@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import unittest
 from test_.test_imagej_csv_base_class import TestImageJCsvBaseClass
-from src.channel_length_factory import ChannelFactory
+from src.channel_factory import ChannelFactory
 
 
 class TestChannelLengthFactory(TestImageJCsvBaseClass):
     def test_create_channel_length_obj(self):
-        channel_length = ChannelFactory._ChannelLengthFactory__create_channel_length_obj(
+        channel_length = ChannelFactory._ChannelFactory__create_channel_instance(
             imagej_data_raw_item=self.expected_output_from_load)
         self.assertEqual(channel_length.filename, 'vp_01_192um_black_4x.tif')
         self.assertEqual(channel_length.heights, {'1': '331.436', '2': '327.391', '3': '326.497'})

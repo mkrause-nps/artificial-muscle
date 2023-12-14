@@ -14,16 +14,6 @@ class Material(Enum):
     Agilus = 'Agilus 30Black FLX985'
 
 
-class Orientation(Enum):
-    HEIGHT = 'height'
-    WIDTH = 'width'
-
-
-class OrientationKey(Enum):
-    HEIGHT = 1
-    WIDTH = 4
-
-
 class Channel:
 
     NUM_MEASUREMENTS = 3

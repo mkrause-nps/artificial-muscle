@@ -10,5 +10,5 @@ class ChannelFactory:
         pass
 
     @classmethod
-    def __create_channel_length_obj(cls, imagej_data_raw_item: list) -> Channel:
+    def __create_channel_instance(cls, imagej_data_raw_item: list) -> Channel:
         return Channel(imagej_data_raw_item)
