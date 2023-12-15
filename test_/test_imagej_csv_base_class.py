@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import unittest
 import os
-from src.channel import Channel
+from src.imagej_analysis.channel import Channel
 from src.utilities import Utilities
 
 

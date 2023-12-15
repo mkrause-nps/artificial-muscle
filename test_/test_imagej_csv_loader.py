@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import unittest
 from test_imagej_csv_base_class import TestImageJCsvBaseClass
-from src.imagej_csv_loader import ImageJCsvLoader
+from src.imagej_analysis.imagej_csv_loader import ImageJCsvLoader
 
 
 class TestImageJCsvLoader(TestImageJCsvBaseClass):

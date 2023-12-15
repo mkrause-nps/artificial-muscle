@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import unittest
 from test_.test_imagej_csv_base_class import TestImageJCsvBaseClass
-from src.channel_factory import ChannelFactory
+from src.imagej_analysis.channel_factory import ChannelFactory
 
 
 class TestChannelLengthFactory(TestImageJCsvBaseClass):
