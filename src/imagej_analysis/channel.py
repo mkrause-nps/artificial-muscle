@@ -14,12 +14,23 @@ class Material(Enum):
     Agilus = 'Agilus 30Black FLX985'
 
 
+class ImageFilename(Enum):
+    VP = 'vp'
+    HP = 'hp'
+
+
+class Orientation(Enum):
+    VERTICAL = '0 deg'
+    HORIZONTAL = '90 deg'
+
+
 class Channel:
 
     NUM_MEASUREMENTS = 3
 
     def __init__(self, imagej_data: list):
         self.filename: str = imagej_data[0]['Label']
+        self.__set_orientation()
         self.__set_lengths(imagej_data)
         self.__set_planned_width()
         self.__set_material()
@@ -38,6 +49,14 @@ class Channel:
 
     def get_channel_side_length_ratio(self) -> float:
         return self.get_average_height()/self.get_average_width()
+
+    def __set_orientation(self):
+        if self.filename.startswith(ImageFilename.VP.value):
+            self.orientation: Orientation = Orientation.VERTICAL
+        elif self.filename.startswith(ImageFilename.HP.value):
+            self.orientation: Orientation = Orientation.HORIZONTAL
+        else:
+            raise ValueError("First letters of filename not recognized - must 'vp' or 'hp'.")
 
     def __set_lengths(self, imagej_data: list) -> None:
         self.heights: dict = {
@@ -59,15 +78,16 @@ class Channel:
     def __set_material(self) -> None:
         """Set material from color in file name."""
         if MaterialColors.WHITE.value in self.filename:
-            self.material: str = Material.SUP.value
+            self.material: Material = Material.SUP
         else:
-            self.material: str = Material.Agilus.value
+            self.material: Material = Material.Agilus
 
     def __str__(self) -> str:
         """String representation of a Channel instance."""
         return (f'\nChannel object:\n'
                 f'  file name: {self.filename}\n'
-                f'  material: {self.material}\n'
+                f'  orientation: {self.orientation.value}\n'
+                f'  material: {self.material.value}\n'
                 f'  planned width: {self.planned_width} um\n'
                 f'  measured width: {round(self.get_average_width(), 1)} um\n'
                 f'  measured height: {round(self.get_average_height(), 1)} um\n'
