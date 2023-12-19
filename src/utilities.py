@@ -25,3 +25,10 @@ class Utilities:
                 file_list.append(os.path.join(root, file))
 
         return file_list
+
+    @staticmethod
+    def ensure_directory_exists(directory_path):
+        if not os.path.exists(directory_path):
+            os.makedirs(directory_path)
+            print(f"Directory '{directory_path}' created.")
+
