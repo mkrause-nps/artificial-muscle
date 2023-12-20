@@ -16,3 +16,5 @@ class Constants:
     LABEL_OFFSET_Y: int = 5
     X_LABEL: str = 'Measured channel width ($\mu m$)'
     Y_LABEL: str = 'Measured channel height ($\mu m$)'
+    X_LABEL_RATIO: str = 'Planned channel width ($\mu m$)'
+    Y_LABEL_RATIO: str = 'Channel (height / width) ratio'

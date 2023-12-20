@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 from enum import Enum
-
 import matplotlib.pyplot as plt
 
 from src.utilities import Utilities
@@ -10,6 +9,7 @@ from src.imagej_analysis.channel_factory import ChannelFactory
 from src.imagej_analysis.channel import Channel, Orientation, Material
 from src.imagej_analysis.data_aggregator import DataAggregator
 from src.imagej_analysis.imagej_csv_loader import ImageJCsvLoader
+
 
 class FigureColors(Enum):
     ZERO_DEG = 'black'
@@ -36,14 +36,20 @@ def main():
 
     # 5. Create scatter plot with error bars
     for data_set in data_sets:
-        x, x_error, y, y_error = __get_plot_data(data_set)
-        __plot_data(data_aggregator=data_set, x=x, y=y, x_error=x_error, y_error=y_error, x_label=Constants.X_LABEL,
-                    y_label=Constants.Y_LABEL)
+        # x, x_error, y, y_error = __get_width_and_height_data(data_set)
+        # __plot_width_height_data(data_aggregator=data_set, x=x, y=y, x_error=x_error, y_error=y_error,
+        #                          x_label=Constants.X_LABEL,
+        #                          y_label=Constants.Y_LABEL)
+
+        x, y, y_error = __get_ratio_data(data_set)
+        __plot_ratio_data(data_aggregator=data_set, x=x, y=y, y_error=y_error, x_label=Constants.X_LABEL_RATIO,
+                          y_label=Constants.Y_LABEL_RATIO, min_=0, max_=1, title=False)
 
 
-def __plot_data(data_aggregator: DataAggregator, x: list, y: list, x_error: list, y_error: list, label: str = '',
-                min_: int = Constants.AXIS_MIN, max_: int = Constants.AXIS_MAX, x_label: str = '', y_label: str = '',
-                title: bool = False, legend: bool = False, fmt: str = 'o', capsize: int = 4) -> None:
+def __plot_width_height_data(data_aggregator: DataAggregator, x: list, y: list, x_error: list, y_error: list,
+                             label: str = '', min_: int = Constants.AXIS_MIN, max_: int = Constants.AXIS_MAX,
+                             x_label: str = '', y_label: str = '', title: bool = False, legend: bool = False,
+                             fmt: str = 'o', capsize: int = 4) -> None:
     plt.errorbar(x, y, xerr=x_error, yerr=y_error, fmt=fmt, capsize=capsize, label=label,
                  color=FigureColors.ZERO_DEG.value, ecolor=FigureColors.ZERO_DEG.value)
 
@@ -91,10 +97,53 @@ def __plot_data(data_aggregator: DataAggregator, x: list, y: list, x_error: list
     plt.show()
 
 
-def __get_plot_data(data_aggregator: DataAggregator) -> tuple[list, list, list, list]:
-    """Returns x, x_err, y, and y_err for a channel object."""
+def __plot_ratio_data(data_aggregator: DataAggregator, x: list, y: list, y_error: list,
+                      label: str = '', min_: int = Constants.AXIS_MIN, max_: int = Constants.AXIS_MAX,
+                      x_label: str = '', y_label: str = '', title: bool = True, legend: bool = False, fmt: str = 'o',
+                      capsize: int = 4) -> None:
+    plt.errorbar(x, y, yerr=y_error, fmt=fmt, capsize=capsize, label=label,
+                 color=FigureColors.ZERO_DEG.value, ecolor=FigureColors.ZERO_DEG.value)
+
+    if title:
+        plt.title(f'Orientation: {data_aggregator.orientation.value}, Material: {data_aggregator.material.value}')
+
+    plt.ylim(ymin=min_, ymax=max_)
+    fontsize = 12
+    # Set labels and title
+    plt.xlabel(x_label, fontsize=fontsize)
+    plt.ylabel(y_label, fontsize=fontsize)
+
+    plt.gca().set_aspect(2000)
+
+    # Set font size for tick labels
+    plt.xticks(fontsize=fontsize)  # Adjust the font size for x-axis tick labels
+    plt.yticks(fontsize=fontsize)  # Adjust the font size for y-axis tick labels
+
+    # Save the plot to disk in SVG format
+    Utilities.ensure_directory_exists(Constants.FIGURE_DIR)
+    fig_name = f'{data_aggregator.orientation.value}_{data_aggregator.material}_ratio.svg'
+    fig_path = os.path.join(Constants.FIGURE_DIR, fig_name)
+    plt.savefig(fig_path)
+
+    # Save the plot to disk in JPEG format with high resolution
+    fig_name = f'{data_aggregator.orientation.value}_{data_aggregator.material}_ratio.png'
+    fig_path = os.path.join(Constants.FIGURE_DIR, fig_name)
+    plt.savefig(fig_path)
+
+    # Show the plot
+    plt.show()
+
+
+def __get_width_and_height_data(data_aggregator: DataAggregator) -> tuple[list, list, list, list]:
+    """Returns x, x_err, y, and y_err of width and height for a channel object."""
     return (data_aggregator.averages_width(), data_aggregator.stdevs_width(), data_aggregator.averages_height(),
             data_aggregator.stdevs_height())
+
+
+def __get_ratio_data(data_aggregator: DataAggregator) -> tuple[list, list, list]:
+    """Returns x, y, and y_err of a channel's aspect ratio."""
+    y, y_err = data_aggregator.average_aspect_ratio()
+    return Constants.WIDTHS, y, y_err
 
 
 if __name__ == '__main__':

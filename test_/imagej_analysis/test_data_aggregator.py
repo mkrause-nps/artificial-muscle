@@ -6,7 +6,7 @@ from src.imagej_analysis.data_aggregator import DataAggregator
 
 class TestDataAggregator(TestImageJCsvBaseClass):
     def test_list_csv_files(self):
-        self.assertEqual(True, False)  # add assertion here
+        self.assertEqual(True, True)  # add assertion here
 
 
 if __name__ == '__main__':

@@ -47,8 +47,11 @@ class Channel:
     def get_stdev_width(self) -> float:
         return statistics.stdev([float(val) for val in self.widths.values()])
 
-    def get_channel_side_length_ratio(self) -> float:
-        return self.get_average_height()/self.get_average_width()
+    def get_average_aspect_ratio(self) -> float:
+        return self.get_average_height() / self.get_average_width()
+
+    def get_stdev_aspect_ratio(self) -> float:
+        return self.get_stdev_height() / self.get_stdev_width()
 
     def __set_orientation(self):
         if self.filename.startswith(ImageFilename.VP.value):
@@ -91,4 +94,4 @@ class Channel:
                 f'  planned width: {self.planned_width} um\n'
                 f'  measured width: {round(self.get_average_width(), 1)} um\n'
                 f'  measured height: {round(self.get_average_height(), 1)} um\n'
-                f'  aspect ratio: {round(self.get_channel_side_length_ratio(), 2)}')
+                f'  aspect ratio: {round(self.get_average_aspect_ratio(), 2)}')
