@@ -61,13 +61,17 @@ class DataAggregator:
 
         return stdevs
 
+    def get_aspect_ratio(self, width: int) -> list[float]:
+        """Returns the aspect ratio for a given planned width."""
+        return [average_data.get_average_aspect_ratio() for average_data in self.data if
+                average_data.planned_width == width]
+
     def average_aspect_ratio(self) -> tuple[list, list]:
         """Calculates the mean and standard deviation of the aspect ratio for each planned width."""
         means: list[float] = []
         stdevs: list[float] = []
         for width in Constants.WIDTHS:
-            x_ratio = [average_data.get_average_aspect_ratio() for average_data in self.data if
-                       average_data.planned_width == width]
+            x_ratio = self.get_aspect_ratio(width)
             x_bar_ratio = sum(x_ratio) / len(x_ratio)
             means.append(x_bar_ratio)
             x_stdev_ratio = statistics.stdev(x_ratio)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import pandas as pd
 
 
 class Utilities:
@@ -26,9 +27,13 @@ class Utilities:
 
         return file_list
 
-    @staticmethod
-    def ensure_directory_exists(directory_path):
+    @classmethod
+    def ensure_directory_exists(cls, directory_path):
         if not os.path.exists(directory_path):
             os.makedirs(directory_path)
             print(f"Directory '{directory_path}' created.")
 
+    @classmethod
+    def save_df_to_csv(cls, df: pd.DataFrame, file_path: str) -> None:
+        """Saves a pandas dataframe to a csv file in the specified data directory."""
+        df.to_csv(file_path)
