@@ -47,45 +47,46 @@ def main():
     df_all = pd.DataFrame(
         columns=[DataFrameColumns.FactorA.value, DataFrameColumns.FactorB.value, DataFrameColumns.FactorC.value,
                  DataFrameColumns.Value.value])
+
     # 5. Create scatter plot with error bars
     for data_set in data_sets:
-        # x, x_error, y, y_error = __get_width_and_height_data(data_set)
-        # __plot_width_height_data(data_aggregator=data_set, x=x, y=y, x_error=x_error, y_error=y_error,
-        #                          x_label=Constants.X_LABEL,
-        #                          y_label=Constants.Y_LABEL)
+        x, x_error, y, y_error = __get_width_and_height_data(data_set)
+        __plot_width_height_data(data_aggregator=data_set, x=x, y=y, x_error=x_error, y_error=y_error,
+                                 x_label=Constants.X_LABEL,
+                                 y_label=Constants.Y_LABEL)
 
         x, y, y_error = __get_ratio_data(data_set)
-        # __plot_ratio_data(data_aggregator=data_set, x=x, y=y, y_error=y_error, x_label=Constants.X_LABEL_RATIO,
-        #                   y_label=Constants.Y_LABEL_RATIO, min_=0, max_=1, title=False)
+        __plot_ratio_data(data_aggregator=data_set, x=x, y=y, y_error=y_error, x_label=Constants.X_LABEL_RATIO,
+                          y_label=Constants.Y_LABEL_RATIO, min_=0, max_=1, title=False)
 
         __fill_df(df=df_all, data_set=data_set)
 
-    # groups_all: list = [df_all[DataFrameColumns.Value.value][
-    #                         (df_all[DataFrameColumns.FactorA.value] == levelA) &
-    #                         (df_all[DataFrameColumns.FactorB.value] == levelB) &
-    #                         (df_all[DataFrameColumns.FactorC.value] == levelC)]
-    #                     for levelA in df_all[DataFrameColumns.FactorA.value].unique()
-    #                     for levelB in df_all[DataFrameColumns.FactorB.value].unique()
-    #                     for levelC in df_all[DataFrameColumns.FactorC.value].unique()
-    #                     ]
-    # f_statistic, p_value = f_oneway(*groups_all)
-    # print(f'groups_all: F statistic: {f_statistic}, p-value: {p_value}')
-    #
-    # groups_material_orientation: list = [df_all[DataFrameColumns.Value.value][
-    #                                          (df_all[DataFrameColumns.FactorB.value] == levelB) &
-    #                                          (df_all[DataFrameColumns.FactorC.value] == levelC)]
-    #                                      for levelB in df_all[DataFrameColumns.FactorB.value].unique()
-    #                                      for levelC in df_all[DataFrameColumns.FactorC.value].unique()
-    #                                      ]
-    # f_statistic, p_value = f_oneway(*groups_material_orientation)
-    # print(f'groups_orientation_material: F statistic: {f_statistic}, p-value: {p_value}')
-    #
-    # groups_channel: list = [df_all[DataFrameColumns.Value.value][
-    #                             (df_all[DataFrameColumns.FactorA.value] == levelA)]
-    #                         for levelA in df_all[DataFrameColumns.FactorA.value].unique()
-    #                         ]
-    # f_statistic, p_value = f_oneway(*groups_channel)
-    # print(f'groups_channel: F statistic: {f_statistic}, p-value: {p_value}')
+    groups_all: list = [df_all[DataFrameColumns.Value.value][
+                            (df_all[DataFrameColumns.FactorA.value] == levelA) &
+                            (df_all[DataFrameColumns.FactorB.value] == levelB) &
+                            (df_all[DataFrameColumns.FactorC.value] == levelC)]
+                        for levelA in df_all[DataFrameColumns.FactorA.value].unique()
+                        for levelB in df_all[DataFrameColumns.FactorB.value].unique()
+                        for levelC in df_all[DataFrameColumns.FactorC.value].unique()
+                        ]
+    f_statistic, p_value = f_oneway(*groups_all)
+    print(f'groups_all: F statistic: {f_statistic}, p-value: {p_value}')
+
+    groups_material_orientation: list = [df_all[DataFrameColumns.Value.value][
+                                             (df_all[DataFrameColumns.FactorB.value] == levelB) &
+                                             (df_all[DataFrameColumns.FactorC.value] == levelC)]
+                                         for levelB in df_all[DataFrameColumns.FactorB.value].unique()
+                                         for levelC in df_all[DataFrameColumns.FactorC.value].unique()
+                                         ]
+    f_statistic, p_value = f_oneway(*groups_material_orientation)
+    print(f'groups_orientation_material: F statistic: {f_statistic}, p-value: {p_value}')
+
+    groups_channel: list = [df_all[DataFrameColumns.Value.value][
+                                (df_all[DataFrameColumns.FactorA.value] == levelA)]
+                            for levelA in df_all[DataFrameColumns.FactorA.value].unique()
+                            ]
+    f_statistic, p_value = f_oneway(*groups_channel)
+    print(f'groups_channel: F statistic: {f_statistic}, p-value: {p_value}')
 
     __per_channel_width_statistics(df=df_all)
 
