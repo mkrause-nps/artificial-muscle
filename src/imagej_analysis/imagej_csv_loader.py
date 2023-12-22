@@ -30,10 +30,10 @@ class ImageJCsvLoader(object):
             reader = csv.reader(fp)
             fieldnames_ = next(reader)
             is_label = ColumnHeaders.label in fieldnames_
-            conditions: list[bool] = cls._filter_fieldnames(fieldnames_)
+            conditions: list[bool] = cls.__filter_fieldnames(fieldnames_)
             rows = []
             for row in reader:
-                row_ = cls._filter_row(row, conditions=conditions)
+                row_ = cls.__filter_row(row, conditions=conditions)
                 if not is_label:
                     row_ = cls.__append_label_to_row(row=row_, filename=filename)
                 rows.append(dict(zip(cls.headers, row_)))
@@ -41,13 +41,13 @@ class ImageJCsvLoader(object):
         return rows
 
     @classmethod
-    def _filter_fieldnames(cls, fieldnames_: list) -> list[bool]:
+    def __filter_fieldnames(cls, fieldnames_: list) -> list[bool]:
         fieldnames = [True if header in [ColumnHeaders.label, ColumnHeaders.length] else False for header in fieldnames_]
         fieldnames[0] = True
         return fieldnames
 
     @staticmethod
-    def _filter_row(row: list, conditions: list[bool]) -> list:
+    def __filter_row(row: list, conditions: list[bool]) -> list:
         return [item for item, condition in zip(row, conditions) if condition]
 
     @staticmethod
