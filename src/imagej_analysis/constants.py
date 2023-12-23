@@ -6,8 +6,11 @@ from typing import List
 class Constants:
     home_directory = os.path.expanduser("~")
     _data_dir = 'data/ms_revision'
+    _data_dir_amscope = 'data/ms_revision/amscope'
     _figure_dir = 'figures'
+    _amscope_data_filename = 'data04_channel_width_study.xlsx'
     DATA_DIR: str = os.path.join(home_directory, _data_dir)
+    DATA_DIR_AMSCOPE: str = os.path.join(home_directory, _data_dir_amscope, _amscope_data_filename)
     FIGURE_DIR: str = os.path.join(home_directory, _data_dir, _figure_dir)
     AXIS_MIN: int = 0
     AXIS_MAX: int = 1200

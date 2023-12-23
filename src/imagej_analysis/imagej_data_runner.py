@@ -1,29 +1,16 @@
 #!/usr/bin/env python3
 import os
-from enum import Enum
 import matplotlib.pyplot as plt
 import pandas
 import pandas as pd
 from scipy.stats import f_oneway
 
-from src.utilities import Utilities
+from src.utilities import Utilities, FigureColors, DataFrameColumns
 from src.imagej_analysis.constants import Constants
 from src.imagej_analysis.channel_factory import ChannelFactory
 from src.imagej_analysis.channel import Channel, Orientation, Material
 from src.imagej_analysis.data_aggregator import DataAggregator
 from src.imagej_analysis.imagej_csv_loader import ImageJCsvLoader
-
-
-class FigureColors(Enum):
-    ZERO_DEG = 'black'
-    NINETY_DEG = 'black'
-
-
-class DataFrameColumns(Enum):
-    FactorA = 'channel'
-    FactorB = 'material'
-    FactorC = 'orientation'
-    Value = 'ratio'
 
 
 def main():
@@ -208,13 +195,13 @@ def __per_channel_width_statistics(df: pandas.DataFrame):
         print(filtered_df)
 
         groups: list = [filtered_df[DataFrameColumns.Value.value][
-                                (filtered_df[DataFrameColumns.FactorA.value] == levelA) &
-                                (filtered_df[DataFrameColumns.FactorB.value] == levelB) &
-                                (filtered_df[DataFrameColumns.FactorC.value] == levelC)]
-                            for levelA in filtered_df[DataFrameColumns.FactorA.value].unique()
-                            for levelB in filtered_df[DataFrameColumns.FactorB.value].unique()
-                            for levelC in filtered_df[DataFrameColumns.FactorC.value].unique()
-                            ]
+                            (filtered_df[DataFrameColumns.FactorA.value] == levelA) &
+                            (filtered_df[DataFrameColumns.FactorB.value] == levelB) &
+                            (filtered_df[DataFrameColumns.FactorC.value] == levelC)]
+                        for levelA in filtered_df[DataFrameColumns.FactorA.value].unique()
+                        for levelB in filtered_df[DataFrameColumns.FactorB.value].unique()
+                        for levelC in filtered_df[DataFrameColumns.FactorC.value].unique()
+                        ]
         f_statistic, p_value = f_oneway(*groups)
         print(f'groups for width {width}: F-statistic: {f_statistic}, p-value: {p_value}')
         df_out.loc[len(df_out)] = [width, f_statistic, p_value]

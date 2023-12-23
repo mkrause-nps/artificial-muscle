@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import os
+from enum import Enum
+
 import pandas as pd
 
 
@@ -37,3 +39,16 @@ class Utilities:
     def save_df_to_csv(cls, df: pd.DataFrame, file_path: str) -> None:
         """Saves a pandas dataframe to a csv file in the specified data directory."""
         df.to_csv(file_path)
+
+
+
+class FigureColors(Enum):
+    ZERO_DEG = 'black'
+    NINETY_DEG = 'black'
+
+
+class DataFrameColumns(Enum):
+    FactorA = 'channel'
+    FactorB = 'material'
+    FactorC = 'orientation'
+    Value = 'ratio'

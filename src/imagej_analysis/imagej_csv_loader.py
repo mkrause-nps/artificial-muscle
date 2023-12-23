@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import csv
-import os
 
+from src.loader_interface import LoaderInterface
 from src.utilities import Utilities
 from src.imagej_analysis.constants import Constants
 
@@ -14,7 +14,7 @@ class ColumnHeaders:
     length = 'Length'
 
 
-class ImageJCsvLoader(object):
+class ImageJCsvLoader(LoaderInterface):
     """Loads data from a CSV file into a list of dictionaries. Each dictionary has the following: item number,
     file name, length of channel. The length of the channel is the vertical dimension if the item number is less than
     4, and is otherwise the horizontal dimension.
