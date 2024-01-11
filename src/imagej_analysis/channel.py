@@ -36,6 +36,8 @@ class Channel:
     NUM_MEASUREMENTS = 3
 
     def __init__(self, data: list[dict] | dict[str: int | str], image_approach: None | ImageApproach):
+        if image_approach is None:
+            image_approach = ImageApproach.IMAGEJ
         self.image_approach: ImageApproach = image_approach
         self.__set_channel_id(data=data)
         self.__set_chip_id(data=data)

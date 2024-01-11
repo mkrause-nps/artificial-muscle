@@ -15,4 +15,4 @@ class ChannelFactory:
 
     @classmethod
     def __create_channel_instance(cls, imagej_data_raw_item: list) -> Channel:
-        return Channel(imagej_data_raw_item)
+        return Channel(data=imagej_data_raw_item, image_approach=None)
