@@ -2,6 +2,7 @@
 
 from enum import Enum
 import statistics
+from src.channel_base import ChannelBase
 
 
 class MaterialColors(Enum):
@@ -31,8 +32,7 @@ class ImageApproach(Enum):
     AMSCOPE = 'AmScope'
 
 
-class Channel:
-
+class Channel(ChannelBase):
     NUM_MEASUREMENTS = 3
 
     def __init__(self, data: list[dict] | dict[str: int | str], image_approach: None | ImageApproach):

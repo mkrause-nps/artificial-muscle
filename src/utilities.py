@@ -41,7 +41,6 @@ class Utilities:
         df.to_csv(file_path)
 
 
-
 class FigureColors(Enum):
     ZERO_DEG = 'black'
     NINETY_DEG = 'black'
