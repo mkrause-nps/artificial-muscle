@@ -23,9 +23,9 @@ class ChannelAmScope(ChannelBase):
 
     def __set_orientation(self, data: pd.DataFrame) -> None:
         if data.iloc[[self.idx_first_item]]['print_direction'].values[0] == 'perpendicular':
-            self.orientation: Orientation = Orientation.PERPENDICULAR
+            self.orientation: Orientation = Orientation.HORIZONTAL
         else:
-            self.orientation: Orientation = Orientation.PARALLEL
+            self.orientation: Orientation = Orientation.VERTICAL
 
     def __set_material(self, data: pd.DataFrame) -> None:
         if data.iloc[[self.idx_first_item]]['material'].values[0] == ' black_resin':

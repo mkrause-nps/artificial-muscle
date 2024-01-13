@@ -9,21 +9,20 @@ from src.config import Config
 class TestChannelAmScope(unittest.TestCase):
 
     def setUp(self):
-        self.data: pd.DataFrame = pd.read_json(os.path.join(Config.TEST_DIR, 'amscope_test_data.json'))
-        self.single_channel = self.data.loc[
-            (self.data['print_direction'] == 'parallel') &
-            (self.data['material'] == 'sacrificial_material') &
-            (self.data['channel_id'] == 288) &
-            (self.data['status'] == 'past')
+        data: pd.DataFrame = pd.read_json(os.path.join(Config.TEST_DIR, 'amscope_test_data.json'))
+        self.single_channel = data.loc[
+            (data['print_direction'] == 'parallel') &
+            (data['material'] == 'sacrificial_material') &
+            (data['channel_id'] == 288) &
+            (data['status'] == 'past')
             ]
 
     def test_constructor(self):
         channel = ChannelAmScope(data=self.single_channel)
-        print(channel)
         self.assertEqual('AmScope', channel.image_approach.value)
         self.assertEqual(288, channel.channel_id)
         self.assertEqual('hp-01', channel.chip_id)
-        self.assertEqual('parallel', channel.orientation.value)
+        self.assertEqual('0 deg', channel.orientation.value)
         self.assertEqual('SUP706B', channel.material.value)
         self.assertEqual(288, channel.planned_width)
 
