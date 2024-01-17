@@ -23,9 +23,14 @@ legend_loc: str
             A Matplotlib formatting string that determines the position of the
             legend on the plot.
 """
+import os
 
 
 class Config:
+    home_directory = os.path.expanduser("~")
+    ROOT_DIR = os.path.join(home_directory, 'dev', 'artificial-muscle')
+    _test_dir = 'test_'
+    TEST_DIR: str = os.path.join(ROOT_DIR, _test_dir)
     # output_dir: str = 'C:\\Users\\mkrause.RIZIA-PC\\OneDrive - Naval Postgraduate School\\artificial_muscle\\data'
     output_dir: str = '/home/mkrause/data/artificial-muscle/channel_width_relative_err/'
     # output_dir: str = '/home/mkrause/data/conductivity/'
