@@ -30,9 +30,6 @@ def main():
     channels_imagej: list[Channel] = ChannelFactory.create_channel_length_instances(
         imagej_data_raw_items=image_data_raw_items)
 
-    # for channel_imagej in channels_imagej:
-    #     print(channel_imagej)
-
     # This is hacky. Better would be to define a bunch of enums that contain that info...
     channel_types: dict[str, list[str]] = {
         'perp_sac_mat': ['perpendicular', 'sacrificial_material'],
@@ -211,8 +208,8 @@ def average_tuples(tups: list[tuple]) -> list[tuple]:
 
 def __plot_width_against_width_data(x: list, y: list, x_error: list, y_error: list,
                                     label: str = '', min_: int = 0, max_: int = 1600,
-                                    x_label: str = 'Channel width from cross-cut view ($\mu m$)',
-                                    y_label: str = 'Channel width from topview ($\mu m$)',
+                                    x_label: str = 'Channel width measured from cross-cut view ($\mu m$)',
+                                    y_label: str = 'Channel width measured from top view ($\mu m$)',
                                     fname: str = '', legend: bool = False,
                                     fmt: str = 'o', capsize: int = 4) -> None:
     plt.errorbar(x, y, xerr=x_error, yerr=y_error, fmt=fmt, capsize=capsize, label=label,
