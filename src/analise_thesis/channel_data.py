@@ -29,10 +29,19 @@ class ChannelData(ChannelDataInterface):
         """Load data from Excel file and store it as a dataframe"""
         data_filename = self.__get_data_filename()
         sheet_name = self.__get_sheetname()
-        df: pd.DataFrame = Loader.read_data(data_path=data_filename, sheet_name=sheet_name)
-        df = df.filter(
-            [Config.COLUMN_NAME_CHIP, self.COLUMN_INJECTION_NUM, self.COLUMN_RESISTANCE, self.COLUMN_STDDEV]
-        )
+        try:
+            df: pd.DataFrame = Loader.read_data(data_path=data_filename, sheet_name=sheet_name)
+            # if df is None:
+            #     raise FileNotFoundError(f'File name {data_filename} not found.')
+            df = df.filter(
+                [Config.COLUMN_NAME_CHIP, self.COLUMN_INJECTION_NUM, self.COLUMN_RESISTANCE, self.COLUMN_STDDEV]
+            )
+        except FileNotFoundError:
+            print('File not found.')
+        except Exception as err:
+            print(f"Unexpected {err=}, {type(err)=}")
+            raise
+
         self.__abort_execution_if_none(df=df, data_filename=data_filename)
         if not df.empty:
             self.is_data = True

@@ -156,6 +156,7 @@ class PlotUtils:
 
         if figname:
             figpath = os.path.join(cls.glob_figpath, figname)
+            print(f'Saving figure to {figpath}')
             fig.savefig(figpath, format=fig_format)
 
     @staticmethod
@@ -183,7 +184,8 @@ class PlotUtils:
     @staticmethod
     def __set_global_font(matplotlib_obj: matplotlib, fontsize: float) -> None:
         """Sets font parameters for all plots"""
-        font = {'family': 'Liberation Sans',
+        font = {'family': 'sans-serif',
+                # 'sans-serif': ['Liberation Sans', 'Helvetica'],
                 'weight': 'normal',
                 'size': fontsize}
         matplotlib_obj.rc('font', **font)

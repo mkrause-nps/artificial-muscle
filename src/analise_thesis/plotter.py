@@ -51,8 +51,11 @@ class Plotter:
         self.is_title_and_labels = is_title_and_labels
 
     def run_individual_chips(self) -> None:
+        # Set x- and y-limits.
         lxlim = 0
         rxlim = 6
+        lylim = None
+        rylim = None  # equivalent to 'auto'
         """Plot all injections of a single chip ID and write plot to disk"""
         if self.data:
             for datum in self.data:
@@ -66,7 +69,7 @@ class Plotter:
                     PlotUtils.plot_scatter(
                         xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, title=title,
                         xlabel=self.xlabel, ylabel=self.ylabel, xlim=[lxlim, rxlim], xticks=xticks,
-                        fontsize=self.fontsize, figname=figname, fig_format=self.fig_format,
+                        ylim=[lylim, rylim], fontsize=self.fontsize, figname=figname, fig_format=self.fig_format,
                         aspect=self.aspect, capsize=self.capsize, colors=None)
                 else:
                     PlotUtils.plot_scatter(
