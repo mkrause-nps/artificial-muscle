@@ -71,7 +71,7 @@ class Plotter:
                     PlotUtils.plot_scatter(
                         xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, title=title,
                         xlabel=self.xlabel, ylabel=self.ylabel, xlim=[lxlim, rxlim], xticks=xticks,
-                        ylim=[lylim, rylim], fontsize=self.fontsize, figname=figname, fig_format=self.fig_format,
+                        ylim=self.ylim, fontsize=self.fontsize, figname=figname, fig_format=self.fig_format,
                         yscale=self.yscale, aspect=self.aspect, capsize=self.capsize, colors=None)
                 else:
                     PlotUtils.plot_scatter(
