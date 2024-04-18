@@ -17,10 +17,12 @@ class Loader:
         try:
             df = pd.read_excel(data_path, sheet_name=sheet_name)
         except FileExistsError as e:
-            print(f'{e}: check if that Excel file exists in the directory - if not add it')
+            print(f'\n{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: '
+                  f'{e}: check if that Excel file exists in the directory - if not add it')
             return None
         except FileNotFoundError as e:
-            print(f'{e}: check if that Excel file exists in the directory - if not add it')
+            print(f'\n{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}: '
+                  f'check if that Excel file exists in the directory - if not add it')
             return None
         df.dropna(axis='rows', how='all', inplace=True)  # remove all rows where all values are NaN's
         df.fillna(method='ffill', inplace=True)          # repeat the last value (from top) if followed by a NaN

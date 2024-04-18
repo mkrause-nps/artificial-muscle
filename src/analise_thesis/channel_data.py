@@ -31,13 +31,14 @@ class ChannelData(ChannelDataInterface):
         sheet_name = self.__get_sheetname()
         try:
             df: pd.DataFrame = Loader.read_data(data_path=data_filename, sheet_name=sheet_name)
-            # if df is None:
-            #     raise FileNotFoundError(f'File name {data_filename} not found.')
             df = df.filter(
                 [Config.COLUMN_NAME_CHIP, self.COLUMN_INJECTION_NUM, self.COLUMN_RESISTANCE, self.COLUMN_STDDEV]
             )
         except FileNotFoundError:
-            print('File not found.')
+            print(f'\n{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}.')
+        except AttributeError as e:
+            print(f'\n{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}.'
+                  f'\nReading data by the Loader possibly resulted in a "None" type')
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")
             raise

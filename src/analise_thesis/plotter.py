@@ -16,22 +16,23 @@ class MyList(list):
 
 class Plotter:
     def __init__(self, data: list[tuple], nrows: int, ncols: int, xlabel: str, ylabel: str, xlim: list, ylim: list,
-                 aspect: int, capsize: int, fig_format: str, is_title_and_labels: bool = True,
+                 aspect: int, capsize: int, fig_format: str, is_title_and_labels: bool = True, yscale: str = 'linear',
                  fontsize: float = 12.0) -> None:
         """
 
         @param data:    a list of one or more three-tuples, which represents data of one channel width on one chip of a
                         specific type, e.g., (896, 1, 'hard')
-        @param nrows:   refers to the rows and columns of a figure, respectively
-        @param ncols:
-        @param xlabel:  figure x- and y- labels
-        @param ylabel:
-        @param xlim:    figure x- and y-limits
-        @param ylim:
+        @param nrows:   number of rows of a figure
+        @param ncols:   number of columns of a figure
+        @param xlabel:  figure x-labels
+        @param ylabel:  figure y-labels
+        @param xlim:    figure x-limits
+        @param ylim:    figure x-limits
         @type aspect:   (float) set the aspect ratio of x- and y-axis, regardless of data ranges
         @param capsize: the length of the horizontal line on top and bottom of an error bar
         @type fig_format: (str) 'png' or 'svg' for vector graphics
         @type is_title_and_labels: (bool) figure has title and x- and y-labels if true
+        @type yscale: (str) 'linear' or 'log'
         @param fontsize: font size for ticks on x- and y-axes in points
         """
 
@@ -47,8 +48,9 @@ class Plotter:
         self.aspect = aspect
         self.capsize = capsize
         self.fig_format = fig_format
-        self.fontsize = fontsize
         self.is_title_and_labels = is_title_and_labels
+        self.yscale: str = yscale
+        self.fontsize = fontsize
 
     def run_individual_chips(self) -> None:
         # Set x- and y-limits.
@@ -70,7 +72,7 @@ class Plotter:
                         xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, title=title,
                         xlabel=self.xlabel, ylabel=self.ylabel, xlim=[lxlim, rxlim], xticks=xticks,
                         ylim=[lylim, rylim], fontsize=self.fontsize, figname=figname, fig_format=self.fig_format,
-                        aspect=self.aspect, capsize=self.capsize, colors=None)
+                        yscale=self.yscale, aspect=self.aspect, capsize=self.capsize, colors=None)
                 else:
                     PlotUtils.plot_scatter(
                         xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, xlim=[lxlim, rxlim],
