@@ -76,8 +76,8 @@ class Plotter:
                 else:
                     PlotUtils.plot_scatter(
                         xdata, ydata, yerr=yerr, nrows=self.nrows, ncols=self.ncols, xlim=[lxlim, rxlim],
-                        xticks=xticks, fontsize=self.fontsize, figname=figname,
-                        fig_format=self.fig_format, aspect=self.aspect, capsize=self.capsize,
+                        xticks=xticks, ylim=self.ylim, fontsize=self.fontsize, figname=figname,
+                        fig_format=self.fig_format, yscale=self.yscale, aspect=self.aspect, capsize=self.capsize,
                         colors=None)
 
     def get_averaged_channel_data(self, data_subset: list[tuple]) -> dict | None:
